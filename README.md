@@ -1,2 +1,5 @@
-# hobbies_tracker
- Save progress for all your tv shows and games!
+# Hobbies Tracker
+
+🥳 Track your hobbies all in one single app!
+
+## Features
