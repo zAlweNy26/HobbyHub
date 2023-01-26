@@ -7,6 +7,10 @@
     html {
         font-family: "Poppins", system-ui, sans-serif;
     }
+
+    span[contenteditable="true"] {
+        @apply hover:bg-neutral/25 focus:text-neutral focus:bg-base-100 rounded px-1 py-0.5 outline-none transition;
+    }
 }
 
 @layer components {

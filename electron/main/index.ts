@@ -18,7 +18,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 let win: BrowserWindow | null = null
-//const preload = join(__dirname, '../preload/index.js')
+const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
@@ -26,24 +26,25 @@ async function createWindow() {
   win = new BrowserWindow({
     title: 'HobbiesTracker',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
+    minWidth: 800,
+    minHeight: 600,
+    width: 1280,
+    height: 720,
+    center: true,
+    useContentSize: true,
     webPreferences: {
-      //preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true,
-      contextIsolation: false,
+      preload
     },
   })
 
   win.removeMenu()
+  win.setBackgroundColor("#27272A")
 
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(url)
     win.webContents.openDevTools({ mode: "detach", activate: false })
   } else {
     win.loadFile(indexHtml)
-    win.webContents.openDevTools({ mode: "detach", activate: false }) //TODO: da togliere quando l'app è finita
   }
 
   win.webContents.on('did-finish-load', () => {
@@ -83,9 +84,7 @@ app.on('activate', () => {
 ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {
-      //preload,
-      nodeIntegration: true,
-      contextIsolation: false,
+      preload
     },
   })
 
@@ -93,5 +92,11 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadURL(`${url}#${arg}`)
   } else {
     childWindow.loadFile(indexHtml, { hash: arg })
+  }
+})
+
+ipcMain.handle('zoom-win', (_, arg) => {
+  if (win) {
+    win.webContents.setZoomFactor(arg / 100)
   }
 })

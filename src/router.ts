@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '@views/Home.vue'
 
 const router = createRouter({
-  history: process.env.IS_WEB ? createWebHistory(import.meta.env.BASE_URL) : createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL), //createWebHistory(import.meta.env.BASE_URL) se si è sul web
   routes: [
     {
       path: '/',

@@ -68,6 +68,7 @@ module.exports = {
 		require('@tailwindcss/typography'),
 		require('tailwindcss-gradients'),
 		require('tailwind-children'),
+		require('@headlessui/tailwindcss'),
 		require('daisyui'),
 	],
 	darkMode: ['class', '[data-theme="dark"]'],

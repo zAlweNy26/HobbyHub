@@ -36,6 +36,7 @@
     "portable": "npm run build && electron-builder --win portable"
   },
   "devDependencies": {
+    "@types/igdb-api-node": "^5.0.0",
     "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
@@ -51,10 +52,18 @@
     "vue-tsc": "^1.0.24"
   },
   "dependencies": {
+    "@floating-ui/vue": "^0.2.0",
+    "@headlessui/tailwindcss": "^0.1.2",
+    "@headlessui/vue": "^1.7.7",
     "@iconify/vue": "^4.0.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
+    "animate.css": "^4.1.1",
     "daisyui": "^2.49.0",
+    "howlongtobeat": "^1.7.0",
+    "igdb-api-node": "^5.0.2",
+    "imdb-api": "^4.4.1",
+    "pinia": "^2.0.29",
     "tailwind-children": "^0.5.0",
     "tailwindcss-gradients": "^3.0.0",
     "vite-tsconfig-paths": "^4.0.5",
