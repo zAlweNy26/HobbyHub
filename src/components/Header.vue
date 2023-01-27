@@ -1,81 +1,191 @@
 <script setup lang="ts">
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { Icon } from '@iconify/vue'
-import { ref } from 'vue'
 import Tooltip from '@components/Tooltip.vue'
 import { useHeaderStore } from '@stores/headerStore'
-import { ViewMode } from '@/interfaces'
+import { Status, ViewMode } from '@/interfaces'
 import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 
 const header = useHeaderStore()
-const { currentSection } = storeToRefs(header)
+const { currentSection, filters, viewMode } = storeToRefs(header)
+
+const isMaximized = ref(false), zoom = ref(100), winTitle = ref("")
+
+window.electron.getProperties().then(p => {
+    zoom.value = p.zoom * 100
+    isMaximized.value = p.isMaximized
+    winTitle.value = p.title
+})
+
+window.electron.onResize((_, obj) => {
+    isMaximized.value = obj.isMaximized
+})
 
 const updateZoom = (perc: number) => {
-    header.updateZoom(perc)
-    window.electron.setZoom(header.zoom)
+    zoom.value = Math.max(10, Math.min(200, zoom.value += perc))
+    window.electron.setZoom(zoom.value)
 }
 
-const updateName = (event: Event) => {
+const updateName = (event: FocusEvent) => {
     const target = event.target as HTMLSpanElement
-    currentSection.value = target.innerText
+    currentSection.value = target.innerText.trim()
 }
 
-const hasFilters = ref(false)
+const blurOnEnter = (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement
+    if (event.key == "Enter") target.blur()
+}
+
+const windowAction = (action: string) => {
+    switch (action) {
+        case "minimize":
+            window.electron.minimize()
+            break
+        case "maximize":
+            window.electron.maximize()
+            isMaximized.value = true
+            break
+        case "unmaximize":
+            window.electron.unmaximize()
+            isMaximized.value = false
+            break
+        case "close":
+            window.electron.close()
+            break
+        default:
+            break
+    }
+}
 </script>
 
 <template>
-    <div class="min-h-0 navbar p-1.5 bg-primary">
-        <div class="gap-2 navbar-start">
-            <Tooltip content="Menu">
-                <label class="btn btn-sm btn-ghost btn-square text-base-100 swap swap-rotate" aria-label="Menu">
-                    <input type="checkbox" class="modal-toggle" />
-                    <Icon icon="fluent:navigation-24-filled" class="w-6 h-6 swap-off" />
-                    <Icon icon="fluent:dismiss-24-filled" class="w-6 h-6 swap-on" />
-                </label>
-            </Tooltip>
-            <span class="font-semibold text-base-100 max-w-1/2" contenteditable="true" @change="updateName">{{ currentSection }}</span>
-        </div>
-        <div class="flex gap-2 navbar-end">
-            <div class="flex items-center shrink-0 justify-center gap-1 p-0.5 overflow-hidden rounded-full select-none outline-2 outline outline-base-100">
-                <Tooltip content="Zoom out">
-                    <button class="btn btn-xs btn-ghost btn-circle text-base-100" aria-label="Zoom out" @click="updateZoom(-10)">
-                        <Icon icon="fluent:zoom-out-24-filled" class="w-6 h-6" />
+    <div class="flex flex-col">
+        <div class="min-h-0 p-0 select-none navbar bg-primary-focus" style="-webkit-app-region: drag">
+            <div class="gap-2 ml-2 navbar-start">
+                <img class="object-cover object-center w-4 h-4" draggable="false" src="/favicon.ico" />
+                <p class="text-sm font-extrabold text-base-100">{{ winTitle }}</p>
+            </div>
+            <div class="navbar-end">
+                <Tooltip content="Minimize window">
+                    <button class="rounded-none btn btn-xs btn-ghost text-base-100" @click="windowAction('minimize')"
+                        aria-label="Minimize window" style="-webkit-app-region: no-drag">
+                        <Icon icon="fluent:subtract-16-filled" class="w-5 h-5" />
                     </button>
                 </Tooltip>
-                <span class="text-xs font-semibold text-base-100">{{ header.zoom }}%</span>
-                <Tooltip content="Zoom in">
-                    <button class="btn btn-xs btn-ghost btn-circle text-base-100" aria-label="Zoom in" @click="updateZoom(10)">
-                        <Icon icon="fluent:zoom-in-24-filled" class="w-6 h-6" />
+                <Tooltip :content="isMaximized ? 'Unmaximize window' : 'Maximize window'">
+                    <button v-if="isMaximized" class="rounded-none btn btn-xs btn-ghost text-base-100" @click="windowAction('unmaximize')"
+                        aria-label="Maximize window" style="-webkit-app-region: no-drag">
+                        <Icon icon="fluent:full-screen-minimize-16-filled" class="w-5 h-5" />
+                    </button>
+                    <button v-else class="rounded-none btn btn-xs btn-ghost text-base-100" @click="windowAction('maximize')"
+                        aria-label="Unmaximize window" style="-webkit-app-region: no-drag">
+                        <Icon icon="fluent:full-screen-maximize-16-filled" class="w-5 h-5" />
+                    </button>
+                </Tooltip>
+                <Tooltip content="Close window">
+                    <button  class="rounded-none btn btn-xs btn-ghost hover:bg-error hover:brightness-90 text-base-100" 
+                        aria-label="Close window" style="-webkit-app-region: no-drag" @click="windowAction('close')">
+                        <Icon icon="fluent:dismiss-16-filled" class="w-5 h-5" />
                     </button>
                 </Tooltip>
             </div>
-            <Tooltip content="Filters">
-                <label class="btn btn-sm btn-ghost btn-square text-base-100 swap" aria-label="Filters">
-                    <input type="checkbox" class="modal-toggle" :checked="hasFilters" @click="hasFilters = !hasFilters" />
-                    <Icon icon="fluent:filter-24-filled" class="w-6 h-6 swap-off" />
-                    <Icon icon="fluent:filter-dismiss-24-filled" class="w-6 h-6 swap-on" />
-                </label>
-            </Tooltip>
-            <div class="mx-0 before:rounded-t-xl after:rounded-b-xl divider divider-horizontal after:bg-base-100/25 before:bg-base-100/25"></div>
-            <Tooltip content="Grid View">
-                <button
-                    class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
-                    :disabled="header.viewMode == ViewMode.Grid" @click="header.changeViewMode(ViewMode.Grid)" aria-label="Grid View">
-                    <Icon icon="fluent:grid-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
-            <Tooltip content="Detail List View">
-                <button
-                    class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
-                    :disabled="header.viewMode == ViewMode.Detail" @click="header.changeViewMode(ViewMode.Detail)" aria-label="Detail List View">
-                    <Icon icon="fluent:apps-list-detail-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
-            <Tooltip content="Compact List View">
-                <button class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
-                    :disabled="header.viewMode == ViewMode.Compact" @click="header.changeViewMode(ViewMode.Compact)" aria-label="Compact List View">
-                    <Icon icon="fluent:text-bullet-list-ltr-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
+        </div>
+        <div class="min-h-0 navbar p-1.5 bg-primary">
+            <div class="gap-2 navbar-start">
+                <Tooltip content="Menu">
+                    <label class="btn btn-sm btn-ghost btn-square text-base-100 swap swap-rotate" aria-label="Menu">
+                        <input type="checkbox" class="modal-toggle" />
+                        <Icon icon="fluent:navigation-24-filled" class="w-6 h-6 swap-off" />
+                        <Icon icon="fluent:dismiss-24-filled" class="w-6 h-6 swap-on" />
+                    </label>
+                </Tooltip>
+                <span class="font-bold truncate text-base-100 text-ellipsis" contenteditable="true"
+                    @focusout="updateName" @keypress="blurOnEnter">{{ currentSection }}</span>
+            </div>
+            <div class="flex gap-2 navbar-end">
+                <div
+                    class="flex items-center shrink-0 justify-center gap-2 py-0.5 px-1 overflow-hidden rounded-full select-none outline-2 outline outline-base-100">
+                    <Tooltip content="Zoom out">
+                        <button class="btn btn-xs btn-ghost btn-circle text-base-100" aria-label="Zoom out"
+                            @click="updateZoom(-10)">
+                            <Icon icon="fluent:zoom-out-24-filled" class="w-6 h-6" />
+                        </button>
+                    </Tooltip>
+                    <span class="text-xs font-bold text-base-100">{{ zoom }}%</span>
+                    <Tooltip content="Zoom in">
+                        <button class="btn btn-xs btn-ghost btn-circle text-base-100" aria-label="Zoom in"
+                            @click="updateZoom(10)">
+                            <Icon icon="fluent:zoom-in-24-filled" class="w-6 h-6" />
+                        </button>
+                    </Tooltip>
+                </div>
+                <Popover v-slot="{ open }" class="relative">
+                    <PopoverButton as="template">
+                        <Tooltip content="Filters" :disable="open">
+                            <button class="btn btn-sm btn-ghost btn-square text-base-100" aria-label="Filters">
+                                <Icon icon="fluent:filter-24-filled" class="w-6 h-6" />
+                            </button>
+                        </Tooltip>
+                    </PopoverButton>
+                    <Transition enter-active-class="transition ease-out"
+                        enter-from-class="transform scale-90 opacity-0" 
+                        enter-to-class="transform scale-100 opacity-100"
+                        leave-active-class="transition ease-in"
+                        leave-from-class="transform scale-100 opacity-100" 
+                        leave-to-class="transform scale-90 opacity-0">
+                        <PopoverPanel class="absolute z-10 transform -translate-x-1/2 left-1/2">
+                            <div class="p-2 rounded-lg shadow-xl bg-base-300">
+                                <div class="relative">
+                                    <div class="absolute flex items-center gap-2 p-1 top-1/2 !-translate-y-1/2 rounded-lg -left-[200%] bg-base-200">
+                                        <Tooltip content="Completed">
+                                            <button class="btn btn-sm btn-ghost btn-square"
+                                                :class="{ 'btn-primary': filters.status == Status.Completed }"
+                                                aria-label="Completed" @click="filters.status = Status.Completed">
+                                                <Icon icon="fluent:checkmark-circle-12-filled" class="w-6 h-6" />
+                                            </button>
+                                        </Tooltip>
+                                        <Icon icon="eva:arrow-ios-back-fill" class="w-4 h-4" />
+                                    </div>
+                                    <Tooltip content="Status">
+                                        <button class="btn btn-sm btn-ghost btn-square"
+                                            :class="{ 'btn-primary': filters.status != Status.None }"
+                                            aria-label="Status">
+                                            <Icon icon="ph:spinner-bold" class="w-6 h-6" />
+                                        </button>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                        </PopoverPanel>
+                    </Transition>
+                </Popover>
+                <div class="mx-0 before:rounded-t-xl after:rounded-b-xl divider divider-horizontal after:bg-base-100/25 before:bg-base-100/25">
+                </div>
+                <Tooltip content="Grid View">
+                    <button
+                        class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
+                        :disabled="viewMode == ViewMode.Grid" @click="header.changeViewMode(ViewMode.Grid)"
+                        aria-label="Grid View">
+                        <Icon icon="fluent:grid-24-filled" class="w-6 h-6" />
+                    </button>
+                </Tooltip>
+                <Tooltip content="Detail List View">
+                    <button
+                        class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
+                        :disabled="viewMode == ViewMode.Detail" @click="header.changeViewMode(ViewMode.Detail)"
+                        aria-label="Detail List View">
+                        <Icon icon="fluent:apps-list-detail-24-filled" class="w-6 h-6" />
+                    </button>
+                </Tooltip>
+                <Tooltip content="Compact List View">
+                    <button
+                        class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
+                        :disabled="viewMode == ViewMode.Compact" @click="header.changeViewMode(ViewMode.Compact)"
+                        aria-label="Compact List View">
+                        <Icon icon="fluent:text-bullet-list-ltr-24-filled" class="w-6 h-6" />
+                    </button>
+                </Tooltip>
+            </div>
         </div>
     </div>
 </template>

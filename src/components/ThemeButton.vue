@@ -1,6 +1,6 @@
 <template>
 	<label class="btn btn-sm btn-ghost btn-square text-base-100 swap" aria-label="Change theme">
-		<input type="checkbox" class="modal-toggle" :checked="settings.isDark" @click="toggleTheme" />
+		<input type="checkbox" class="modal-toggle" :checked="isDark" @click="toggleTheme" />
 		<Icon icon="eva:moon-fill" class="w-6 h-6 swap-off" />
 		<Icon icon="eva:sun-fill" class="w-6 h-6 swap-on" />
 	</label>
@@ -10,8 +10,11 @@
 import { Icon } from '@iconify/vue'
 import { onMounted } from 'vue'
 import { useSettingsStore } from '@stores/settingsStore'
+import { storeToRefs } from 'pinia'
 
 const settings = useSettingsStore()
+
+const { isDark } = storeToRefs(settings)
 
 function setTheme(dark: boolean) {
 	document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
@@ -19,13 +22,13 @@ function setTheme(dark: boolean) {
 }
 
 function toggleTheme() {
-	setTheme(settings.isDark = !settings.isDark)
+	setTheme(isDark.value = !isDark.value)
 	window.dispatchEvent(new Event('storage'))
 }
 
 onMounted(() => {
-	settings.isDark = localStorage.getItem("theme") === 'dark' ||
+	isDark.value = localStorage.getItem("theme") === 'dark' ||
 		(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-	setTheme(settings.isDark)
+	setTheme(isDark.value)
 })
 </script>

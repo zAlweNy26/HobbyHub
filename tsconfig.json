@@ -18,7 +18,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@electron/*": ["electron/*"],
       "@assets/*": ["src/assets/*"],
       "@stores/*": ["src/stores/*"],
       "@components/*": ["src/components/*"],

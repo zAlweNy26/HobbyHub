@@ -1,4 +1,4 @@
-import type { ContextBridgeApi } from '@electron/preload/index'
+import type { ContextBridgeApi } from '@/preload'
 
 declare global {
     interface Window {

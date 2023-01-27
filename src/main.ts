@@ -1,10 +1,22 @@
-import { createApp } from 'vue'
+import { Raw, createApp, markRaw } from 'vue'
 import "./assets/main.css"
+import 'animate.css'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
+import type { Router } from 'vue-router'
+
+declare module 'pinia' {
+    export interface PiniaCustomProperties {
+        router: Raw<Router>
+    }
+}
 
 const pinia = createPinia()
+
+pinia.use(({ store }) => {
+    store.router = markRaw(router)
+})
 
 const app = createApp(App)
 

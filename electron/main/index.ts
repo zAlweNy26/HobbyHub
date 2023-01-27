@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
+import { Properties, Resize } from '../../src/preload'
 
 process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
@@ -26,19 +27,21 @@ async function createWindow() {
   win = new BrowserWindow({
     title: 'HobbiesTracker',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
-    minWidth: 800,
-    minHeight: 600,
+    backgroundColor: "#27272A",
+    minWidth: 600,
+    minHeight: 500,
     width: 1280,
     height: 720,
     center: true,
+    frame: false,
     useContentSize: true,
     webPreferences: {
-      preload
+      preload,
+      spellcheck: false
     },
   })
 
   win.removeMenu()
-  win.setBackgroundColor("#27272A")
 
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(url)
@@ -51,11 +54,47 @@ async function createWindow() {
     win?.webContents.send('page-message', "Finished loading!")
   })
 
-  // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+
+  win.on("resize", () => {
+    const winSize = win.getSize()
+    const obj = {
+      isMaximized: win.isMaximized(),
+      size: {
+        width: winSize[0],
+        height: winSize[1]
+      }
+    } satisfies Resize
+    win.webContents.send('resize-win', JSON.stringify(obj))
+  })
+
+  ipcMain.handle('set-zoom', (_, arg) => win.webContents.setZoomFactor(arg / 100))
+  
+  ipcMain.handle('win-properties', () => {
+    const winSize = win.getSize()
+    const properties = {
+      zoom: win.webContents.zoomFactor,
+      isMaximized: win.isMaximized(),
+      isMinimized: win.isMinimized(),
+      title: win.title,
+      size: {
+        width: winSize[0],
+        height: winSize[1]
+      }
+    } satisfies Properties & Resize
+    return properties
+  })
+  
+  ipcMain.handle('minimize-win', () => win.minimize())
+  
+  ipcMain.handle('maximize-win', () => win.maximize())
+
+  ipcMain.handle('unmaximize-win', () => win.unmaximize())
+
+  ipcMain.handle('close-win', () => win.close())
 }
 
 app.whenReady().then(createWindow)
@@ -92,11 +131,5 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadURL(`${url}#${arg}`)
   } else {
     childWindow.loadFile(indexHtml, { hash: arg })
-  }
-})
-
-ipcMain.handle('zoom-win', (_, arg) => {
-  if (win) {
-    win.webContents.setZoomFactor(arg / 100)
   }
 })
