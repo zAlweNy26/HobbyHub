@@ -35,6 +35,22 @@
     .toggle {
         @apply !bg-none !border-2;
     }
+    .btn-outline.btn-error:hover, .btn-outline.btn-success:hover, 
+    .btn-outline.btn-info:hover, .btn-outline.btn-warning:hover {
+        @apply text-base-100;
+    }
+    .btn-error:hover:not(.btn-outline), .btn-error.btn-active:not(.btn-outline), 
+    .btn-info:hover:not(.btn-outline), .btn-info.btn-active:not(.btn-outline),
+    .btn-success:hover:not(.btn-outline), .btn-success.btn-active:not(.btn-outline), 
+    .btn-warning:hover:not(.btn-outline), .btn-warning.btn-active:not(.btn-outline) {
+        @apply brightness-[0.85];
+    }
+    .btn-outline {
+        @apply border-2;
+    }
+    .checkbox {
+        @apply border-2;
+    }
 }
 
 body {
@@ -46,17 +62,19 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: #27272a;
     border-radius: 10px;
+    border: 6px solid #f4f4f5;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #f4f4f5;
+    border: 6px solid #27272a;
 }
 
 ::-webkit-scrollbar-track {

@@ -1,8 +1,23 @@
 enum Status {
-    Completed,
-    Dropped,
-    Paused,
-    None
+    "None",
+    "Not Started",
+    "Dropped",
+    "Paused",
+    "Completed"
+}
+
+enum Platform {
+    "None",
+    "PC",
+    "Nintendo Switch",
+    "Xbox",
+    "PlayStation"
+}
+
+enum Order {
+    None,
+    Ascending,
+    Descending
 }
 
 enum ViewMode {
@@ -11,19 +26,34 @@ enum ViewMode {
     Compact
 }
 
-interface ICard {
-    name: string
-    image: string
+interface IFilters {
+    status: Status,
+    platform: Platform
 }
 
-interface IFilters {
-    alphabet: boolean
-    status: Status
+interface ITag {
+    type: string
+    value: string
+    color: string
+}
+
+interface ISortings extends IFilters {
+    alphabet: Order
+}
+
+interface ICard {
+    name: string
+    image: string,
+    tags: ITag[]
 }
 
 export {
     ICard,
     Status,
+    Platform,
+    Order,
+    ITag,
     IFilters,
+    ISortings,
     ViewMode
 }

@@ -10,7 +10,7 @@ const props = defineProps({
     },
     arrow: {
         type: Boolean,
-        default: false
+        default: true
     },
     placement: {
         type: String,
@@ -36,7 +36,6 @@ const opposedSide = oppositeSides[placement.value.split("-")[0] as keyof typeof 
 
 const arrX = middlewareData.value.arrow?.x
 const arrY = middlewareData.value.arrow?.y
-const arrOffset = middlewareData.value.arrow?.centerOffset
 </script>
 
 <template>
@@ -55,11 +54,11 @@ const arrOffset = middlewareData.value.arrow?.centerOffset
             leave-to-class="opacity-0">
             <div ref="tooltipRef" v-show="!isHidden"
                 :style="{ left: `${x ?? 0}px`, top: `${y ?? 0}px`, position: strategy, width: 'max-content' }"
-                class="z-50 px-2 py-1 text-xs font-semibold transition-opacity rounded-md select-none bg-neutral-focus text-base-100">
-                {{ props.content }}
+                class="z-40 px-2 py-1 text-xs font-semibold transition-opacity rounded-md select-none bg-neutral-focus text-base-100">
                 <div v-if="props.arrow" 
-                    :style="{ left: arrX ? `${arrX + (arrOffset ?? 0)}px` : '', top: arrY ? `${arrY}px` : '', bottom: '', right: '', [opposedSide]: '-2px'}"
-                    class="absolute w-2 h-2 rotate-45 bg-neutral-focus" ref="arrowRef"></div>
+                    :style="{ left: arrX ? `${arrX}px` : '', top: arrY ? `${arrY}px` : '', bottom: '', right: '', [opposedSide]: '-2px'}"
+                    class="absolute w-1 h-1 rotate-45 bg-neutral-focus" ref="arrowRef"></div>
+                {{ props.content }}
             </div>
         </Transition>
     </div>

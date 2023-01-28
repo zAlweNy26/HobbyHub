@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { ICard, ViewMode } from '@/interfaces'
 
 const props = defineProps<{
@@ -7,7 +6,7 @@ const props = defineProps<{
     mode: ViewMode
 }>()
 
-const { name, image } = props.content
+const { name, image, tags } = props.content
 </script>
 
 <template>
@@ -21,16 +20,24 @@ const { name, image } = props.content
         <img class="object-cover object-center w-20 rounded-md select-none h-28" draggable="false" :src="image" />
         <div class="flex flex-col gap-1">
             <p class="font-bold">{{ name }}</p>
-            <p class="text-sm font-medium">Tags</p>
+            <div class="flex items-center gap-2">
+                <div v-for="tag in tags" :key="tag.type" :class="tag.color"
+                    class="flex items-center gap-1 px-1.5 py-0.5 rounded-full w-min">
+                    <p class="text-xs font-bold text-base-100 whitespace-nowrap">{{ tag.value }}</p>
+                </div>
+            </div>
         </div>
     </div>
     <div v-else-if="mode == ViewMode.Compact" class="flex flex-col w-full gap-1 p-2 transition-all rounded-lg cursor-pointer h-min hover:bg-base-300">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-2">
             <img class="object-cover object-center w-4 h-4 select-none" draggable="false" :src="image" />
             <p class="font-bold">{{ name }}</p>
         </div>
-        <div class="flex items-center gap-1">
-            <p class="text-sm font-medium">Tags</p>
+        <div class="flex items-center gap-2">
+            <div v-for="tag in tags" :key="tag.type" :class="tag.color"
+                class="flex items-center gap-1 px-1.5 py-0.5 rounded-full w-min">
+                <p class="text-xs font-bold text-base-100 whitespace-nowrap">{{ tag.value }}</p>
+            </div>
         </div>
     </div>
 </template>

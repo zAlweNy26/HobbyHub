@@ -1,6 +1,6 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
-import { release } from 'node:os'
-import { join } from 'node:path'
+import { release } from 'os'
+import { join } from 'path'
 import { Properties, Resize } from '../../src/preload'
 
 process.env.DIST_ELECTRON = join(__dirname, '..')
