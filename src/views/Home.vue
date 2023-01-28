@@ -43,7 +43,6 @@ const computedCards = computed(() => {
     }
 
     if (filters.value.platform != Platform.None) {
-        console.log("filtered")
         sortedCards = sortedCards.filter(c => c.tags.find(t => t.type == 'platform' && t.value == Object.values(Platform)[filters.value.platform]))
     }
     
