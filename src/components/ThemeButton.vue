@@ -1,5 +1,5 @@
 <template>
-	<label class="btn btn-sm btn-ghost btn-square text-base-100 swap" aria-label="Change theme">
+	<label class="btn btn-sm btn-ghost btn-square swap" aria-label="Change theme">
 		<input type="checkbox" class="modal-toggle" :checked="isDark" @click="toggleTheme" />
 		<Icon icon="eva:moon-fill" class="w-6 h-6 swap-off" />
 		<Icon icon="eva:sun-fill" class="w-6 h-6 swap-on" />

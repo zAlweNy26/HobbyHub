@@ -7,6 +7,7 @@ import { useHeaderStore } from '@stores/headerStore'
 import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import ThemeButton from '@components/ThemeButton.vue'
 
 const header = useHeaderStore()
 const { currentSection, viewMode, sortings, sectionsList } = storeToRefs(header)
@@ -199,6 +200,7 @@ const updateAlphabeticalOrder = () => {
                             <DialogPanel class="relative w-screen pointer-events-auto max-w-fit">
                                 <div class="flex flex-col h-full max-w-[15rem] gap-2 p-2 overflow-y-auto shadow-xl bg-base-300">
                                     <div class="flex items-center justify-between gap-4 overflow-hidden">
+                                        <ThemeButton />
                                         <button class="gap-2 px-1 btn btn-sm btn-ghost" aria-label="Open Settings">
                                             <Icon icon="fluent:settings-24-filled" class="w-6 h-6" />
                                             <p class="text-base capitalize">Settings</p>
