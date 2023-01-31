@@ -45,14 +45,14 @@ const arrY = middlewareData.value.arrow?.y
             @focus="isHidden = false" @blur="isHidden = true">
             <slot />
         </div>
-        <Transition v-if="!disable"
+        <Transition v-if="!disable" v-show="!isHidden"
             enter-active-class="transition ease-out"
             enter-from-class="opacity-0" 
             enter-to-class="opacity-100"
             leave-active-class="transition ease-in"
             leave-from-class="opacity-100" 
             leave-to-class="opacity-0">
-            <div ref="tooltipRef" v-show="!isHidden"
+            <div ref="tooltipRef"
                 :style="{ left: `${x ?? 0}px`, top: `${y ?? 0}px`, position: strategy, width: 'max-content' }"
                 class="z-40 px-2 py-1 text-xs font-semibold transition-opacity rounded-md select-none bg-neutral-focus text-base-100">
                 <div v-if="props.arrow" 

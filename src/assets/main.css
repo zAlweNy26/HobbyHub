@@ -11,6 +11,18 @@
     span[contenteditable="true"] {
         @apply hover:bg-neutral/25 focus:text-neutral focus:bg-base-100 rounded px-1 py-0.5 outline-none transition;
     }
+
+    .input-group-bordered {
+        @apply input-group !rounded-lg overflow-hidden;
+    }
+
+    .input-group-bordered > input, .select {
+        @apply !outline-0 !ring-0 border-0;
+    }
+
+    .input-group-bordered > span {
+        @apply !px-2 justify-center;
+    }
 }
 
 @layer components {

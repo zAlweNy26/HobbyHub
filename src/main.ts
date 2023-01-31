@@ -18,6 +18,8 @@ pinia.use(({ store }) => {
     store.router = markRaw(router)
 })
 
+//watch(pinia.state, state => localStorage.setItem('piniaState', JSON.stringify(state)), { deep: true })
+
 const app = createApp(App)
 
 app.use(router)

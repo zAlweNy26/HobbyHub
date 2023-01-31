@@ -15,15 +15,23 @@ export const useHeaderStore = defineStore('header', () => {
     })
 
     const viewMode = ref<ViewMode>(ViewMode.Grid)
-    const currentSection = ref("Template")
+    const currentSection = ref(0)
+    const sectionsList = ref(["Template", "Games"])
 
     const changeViewMode = (mode: ViewMode) => viewMode.value = mode
+
+    const updateSection = (index: number, name: string) => {
+        if (index >= sectionsList.value.length) return;
+        sectionsList.value[index] = name;
+    }
 
     return {
         filters,
         sortings,
         viewMode,
         currentSection,
-        changeViewMode
+        changeViewMode,
+        sectionsList,
+        updateSection
     }
 })
