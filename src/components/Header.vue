@@ -10,7 +10,7 @@ import { ref } from 'vue'
 import ThemeButton from '@components/ThemeButton.vue'
 
 const header = useHeaderStore()
-const { currentSection, viewMode, sortings, sectionsList } = storeToRefs(header)
+const { currentSection, viewMode, sortings, sectionsList, categories } = storeToRefs(header)
 
 const searchItem = ref("")
 const zoom = ref(100)
@@ -24,7 +24,7 @@ const updateZoom = (perc: number) => {
 }
 
 const updateName = (event: FocusEvent) => {
-    const target = event.target as HTMLSpanElement
+    const target = event.target as HTMLElement
     header.updateSection(currentSection.value, target.innerText.trim())
 }
 
@@ -50,7 +50,7 @@ const updateAlphabeticalOrder = () => {
 </script>
 
 <template>
-    <div class="justify-between min-h-0 gap-2 navbar bg-primary">
+    <div class="justify-between min-h-0 gap-2 navbar shrink-0 bg-primary">
         <div class="gap-2 navbar-start w-[45%]">
             <Tooltip content="Menu">
                 <button class="btn btn-sm btn-ghost btn-square text-base-100" @click="showSide = true"
@@ -105,20 +105,8 @@ const updateAlphabeticalOrder = () => {
                                     <Icon icon="fluent:text-sort-descending-16-filled" class="w-6 h-6 swap-off" />
                                 </label>
                             </Tooltip>
-                            <ListHandler tooltip="By Status" icon="ph:spinner-bold" handler="sortings" category="status"
-                                :values="[
-                                    { value: 'Not Started', icon: 'fluent:record-stop-12-filled' },
-                                    { value: 'Dropped', icon: 'fluent:drop-12-filled' },
-                                    { value: 'Paused', icon: 'fluent:pause-12-filled' },
-                                    { value: 'Completed', icon: 'fluent:checkmark-circle-12-filled' }
-                                ]" />
-                            <ListHandler tooltip="By Platform" icon="fluent:laptop-16-regular" handler="sortings"
-                                category="platform" :values="[
-                                    { value: 'PC', icon: 'ri:windows-fill' },
-                                    { value: 'Nintendo Switch', icon: 'ri:switch-fill' },
-                                    { value: 'Xbox', icon: 'ri:xbox-fill' },
-                                    { value: 'PlayStation', icon: 'ri:playstation-fill' }
-                                ]" />
+                            <ListHandler v-for="cat in categories" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
+                                handler="sortings" :category="cat.name.toLowerCase()" :values="cat.options" />
                         </div>
                     </PopoverPanel>
                 </Transition>
@@ -137,20 +125,8 @@ const updateAlphabeticalOrder = () => {
                     leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
                     <PopoverPanel class="absolute z-10 transform -translate-x-1/2 translate-y-3/4 left-1/2">
                         <div class="flex gap-2 p-2 shadow-xl rounded-xl bg-base-300">
-                            <ListHandler tooltip="By Status" icon="ph:spinner-bold" handler="filters" category="status"
-                                :values="[
-                                    { value: 'Not Started', icon: 'fluent:record-stop-12-filled' },
-                                    { value: 'Dropped', icon: 'fluent:drop-12-filled' },
-                                    { value: 'Paused', icon: 'fluent:pause-12-filled' },
-                                    { value: 'Completed', icon: 'fluent:checkmark-circle-12-filled' }
-                                ]" />
-                            <ListHandler tooltip="By Platform" icon="fluent:laptop-16-regular" handler="filters"
-                                category="platform" :values="[
-                                    { value: 'PC', icon: 'ri:windows-fill' },
-                                    { value: 'Nintendo Switch', icon: 'ri:switch-fill' },
-                                    { value: 'Xbox', icon: 'ri:xbox-fill' },
-                                    { value: 'PlayStation', icon: 'ri:playstation-fill' }
-                                ]" />
+                            <ListHandler v-for="cat in categories" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
+                                handler="filters" :category="cat.name.toLowerCase()" :values="cat.options" />
                         </div>
                     </PopoverPanel>
                 </Transition>
@@ -190,8 +166,8 @@ const updateAlphabeticalOrder = () => {
                 enter-to="opacity-100" leave="ease-in-out" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 transition-opacity bg-opacity-50 top-6 bg-base-100" />
             </TransitionChild>
-            <div class="fixed inset-0 overflow-hidden">
-                <div class="absolute inset-0 overflow-hidden">
+            <div class="fixed inset-0 overflow-hidden top-6">
+                <div class="absolute inset-0 overflow-hidden top-6">
                     <div class="fixed inset-y-0 left-0 flex max-w-full pointer-events-none top-6">
                         <TransitionChild as="template" enter="transform transition ease-in-out duration-300"
                             enter-from="-translate-x-full" enter-to="translate-x-0"

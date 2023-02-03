@@ -8,7 +8,7 @@ enum Status {
 
 enum Platform {
     "None",
-    "PC",
+    "Windows",
     "Nintendo Switch",
     "Xbox",
     "PlayStation"
@@ -26,15 +26,27 @@ enum ViewMode {
     Compact
 }
 
+interface IOption {
+    value: string
+    icon: string
+    bg?: string
+    fg?: string
+}
+
+interface ICategory {
+    name: string
+    icon: string
+    options: IOption[]
+}
+
 interface IFilters {
-    status: Status,
+    status: Status
     platform: Platform
 }
 
 interface ITag {
     type: string
     value: string
-    color: string
 }
 
 interface ISortings extends IFilters {
@@ -43,7 +55,9 @@ interface ISortings extends IFilters {
 
 interface ICard {
     name: string
-    image: string,
+    image: string
+    added: number
+    updated: number
     tags: ITag[]
 }
 
@@ -53,6 +67,8 @@ export {
     Platform,
     Order,
     ITag,
+    ICategory,
+    IOption,
     IFilters,
     ISortings,
     ViewMode

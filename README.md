@@ -2,6 +2,8 @@
 
 🥳 Track your hobbies all in one single app!
 
+Idea by @FedeDC512
+
 ## ✨ Features
 
 I don't know... just try it!

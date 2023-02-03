@@ -65,8 +65,6 @@ const windowAction = (action: string) => {
             </div>
         </div>
         <Header />
-        <main class="flex overflow-y-auto text-neutral grow">
-            <RouterView />
-        </main>
+        <RouterView />
     </div>
 </template>

@@ -3,16 +3,14 @@ import { Icon } from '@iconify/vue'
 import Tooltip from '@components/Tooltip.vue'
 import { useHeaderStore } from '@stores/headerStore'
 import { storeToRefs } from 'pinia'
+import type { IOption } from '@/interfaces'
 import { ref } from 'vue'
 
 const props = defineProps<{
     tooltip: string,
     handler: "sortings" | "filters",
     category: string,
-    values: {
-        value: string
-        icon: string
-    }[],
+    values: IOption[],
     icon: string
 }>()
 
@@ -25,7 +23,7 @@ const handler = headerRefs[props.handler]
 const category = props.category as keyof typeof handler.value
 
 const toggleMenu = (val: string) => {
-    const indexVal = props.values.findIndex(e => e.value == val) + 1
+    const indexVal = props.values.findIndex(e => e.value == val)
     if (handler.value[category] == indexVal) handler.value[category] = 0 as never
     else {
         handler.value[category] = indexVal as never
@@ -43,7 +41,7 @@ const toggleMenu = (val: string) => {
                 class="absolute flex flex-col items-center gap-2 p-1 -ml-1 rounded-lg top-full bg-base-200">
                 <Tooltip v-for="(e, i) in values" :key="e.value" :content="e.value">
                     <button class="btn btn-sm btn-ghost btn-square"
-                        :class="{ '!btn-primary': handler[category] == i + 1 as never }" :aria-label="e.value"
+                        :class="{ '!btn-primary': handler[category] == i as never }" :aria-label="e.value"
                         @click="toggleMenu(e.value)">
                         <Icon :icon="e.icon" class="w-6 h-6" />
                     </button>
