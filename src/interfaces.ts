@@ -1,19 +1,3 @@
-enum Status {
-    "None",
-    "Not Started",
-    "Dropped",
-    "Paused",
-    "Completed"
-}
-
-enum Platform {
-    "None",
-    "Windows",
-    "Nintendo Switch",
-    "Xbox",
-    "PlayStation"
-}
-
 enum Order {
     None,
     Ascending,
@@ -39,18 +23,9 @@ interface ICategory {
     options: IOption[]
 }
 
-interface IFilters {
-    status: Status
-    platform: Platform
-}
-
 interface ITag {
     type: string
     value: string
-}
-
-interface ISortings extends IFilters {
-    alphabet: Order
 }
 
 interface ICard {
@@ -63,13 +38,9 @@ interface ICard {
 
 export {
     ICard,
-    Status,
-    Platform,
     Order,
     ITag,
     ICategory,
     IOption,
-    IFilters,
-    ISortings,
     ViewMode
 }

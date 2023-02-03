@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref } from 'vue'
 import { ICard, ViewMode, ICategory, ITag } from '@/interfaces'
 import {
     TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle,

@@ -2,11 +2,11 @@
 import { reactive, computed } from 'vue'
 import Card from '@components/Card.vue'
 import { useHeaderStore } from '@stores/headerStore'
-import { ICard, ViewMode, Order, Status, Platform } from '@/interfaces'
+import { ICard, ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 
 const header = useHeaderStore()
-const { viewMode, sortings, filters } = storeToRefs(header)
+const { viewMode, sortings, filters, categories } = storeToRefs(header)
 
 const cards = reactive<ICard[]>([
     {
@@ -50,47 +50,33 @@ const cards = reactive<ICard[]>([
 const computedCards = computed(() => {
     let sortedCards: (ICard & { index: number })[] = JSON.parse(JSON.stringify(cards))
     sortedCards.map((v, i) => Object.assign(v, { index: i }))
-
-    if (filters.value.status != Status.None) {
-        sortedCards = sortedCards.filter(c => c.tags.find(t => t.type == 'status' && t.value == Object.values(Status)[filters.value.status]))
-    }
-
-    if (filters.value.platform != Platform.None) {
-        sortedCards = sortedCards.filter(c => c.tags.find(t => t.type == 'platform' && t.value == Object.values(Platform)[filters.value.platform]))
-    }
+    
+    Object.keys(filters.value).forEach((f, i) => {
+        const filter = Object.values(filters.value)[i] as number
+        if (filter != 0) {
+            const opts = categories.value.find(c => c.name.toLowerCase() == f)?.options?.map(o => o.value) ?? []
+            sortedCards = sortedCards.filter(c => c.tags.find(t => t.type == f && t.value == opts[filter]))
+        }
+    })
 
     if (sortings.value.alphabet == Order.Ascending) sortedCards.sort((c1, c2) => c1.name.localeCompare(c2.name))
     else if (sortings.value.alphabet == Order.Descending) sortedCards.sort((c1, c2) => c2.name.localeCompare(c1.name))
 
-    if (sortings.value.status != Status.None) {
-        const currentStatus = Object.values(Status)[sortings.value.status]
-        const isFirstStatus = Object.keys(Status)[sortings.value.status] == Object.keys(Status)[1]
-
-        sortedCards = [
-            ...sortedCards.filter(c => c.tags.find(t => t.type == 'status')?.value == currentStatus),
-            ...sortedCards.filter(c => c.tags.find(t => t.type == 'status')?.value != currentStatus).sort((c1, c2) =>
-                isFirstStatus ? Status[c1.tags.find(t => t.type == 'status')?.value as keyof typeof Status] -
-                    Status[c2.tags.find(t => t.type == 'status')?.value as keyof typeof Status] :
-                    Status[c2.tags.find(t => t.type == 'status')?.value as keyof typeof Status] -
-                    Status[c1.tags.find(t => t.type == 'status')?.value as keyof typeof Status]
-            )
-        ]
-    }
-
-    if (sortings.value.platform != Platform.None) {
-        const currentPlatform = Object.values(Platform)[sortings.value.platform]
-        const isFirstPlatform = Object.keys(Platform)[sortings.value.platform] == Object.keys(Platform)[1]
-
-        sortedCards = [
-            ...sortedCards.filter(c => c.tags.find(t => t.type == 'platform')?.value == currentPlatform),
-            ...sortedCards.filter(c => c.tags.find(t => t.type == 'platform')?.value != currentPlatform).sort((c1, c2) =>
-                isFirstPlatform ? Platform[c1.tags.find(t => t.type == 'platform')?.value as keyof typeof Platform] -
-                    Platform[c2.tags.find(t => t.type == 'platform')?.value as keyof typeof Platform] :
-                    Platform[c2.tags.find(t => t.type == 'platform')?.value as keyof typeof Platform] -
-                    Platform[c1.tags.find(t => t.type == 'platform')?.value as keyof typeof Platform]
-            )
-        ]
-    }
+    Object.keys(sortings.value).forEach((s, i) => {
+        const sortingsValues = Object.values(sortings.value)
+        const sorting = sortingsValues[i]
+        if (sorting != 0) {
+            const opts = categories.value.find(c => c.name.toLowerCase() == s)?.options?.map(o => o.value) ?? []
+            sortedCards = [
+                ...sortedCards.filter(c => c.tags.find(t => t.type == s)?.value == opts[sorting]),
+                ...sortedCards.filter(c => c.tags.find(t => t.type == s)?.value != opts[sorting]).sort((c1, c2) => {
+                    const c1Sort = opts.findIndex(o => o == c1.tags.find(t => t.type == s)?.value)
+                    const c2Sort = opts.findIndex(o => o == c2.tags.find(t => t.type == s)?.value)
+                    return sorting == 1 ? c1Sort - c2Sort : c2Sort - c1Sort
+                })
+            ]
+        }
+    })
 
     return sortedCards
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { arrow, computePosition, flip, offset, shift, Placement, ReferenceElement } from "@floating-ui/dom"
+import { arrow, computePosition, flip, offset, shift, Placement } from "@floating-ui/vue"
 
 const props = defineProps({
     content: String,
@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const isHidden = ref(true)
-const hoverRef = ref<ReferenceElement>(), tooltipRef = ref<HTMLElement>(), arrowRef = ref<HTMLElement>()
+const hoverRef = ref<HTMLElement>(), tooltipRef = ref<HTMLElement>(), arrowRef = ref<HTMLElement>()
 
 async function calculatePosition() {
     const { x, y, middlewareData, placement } = await computePosition(

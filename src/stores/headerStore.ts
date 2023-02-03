@@ -1,19 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { IFilters, ISortings, Status, ViewMode, Order, Platform, ICategory } from '@/interfaces'
+import { ViewMode, Order, ICategory } from '@/interfaces'
 
 export const useHeaderStore = defineStore('header', () => {
-    const filters = ref<IFilters>({
-        status: Status.None,
-        platform: Platform.None
-    })
-
-    const sortings = ref<ISortings>({
-        alphabet: Order.None,
-        status: Status.None,
-        platform: Platform.None
-    })
-
     const categories = ref<ICategory[]>([
         {
             name: "Status",
@@ -38,6 +27,15 @@ export const useHeaderStore = defineStore('header', () => {
             ]
         }
     ])
+
+    const categoriesObj = categories.value.map(c => c.name).reduce((acc: {[key: string]: number}, curr) => {
+        acc[curr.toLowerCase()] = 0
+        return acc
+    }, {})
+
+    const filters = ref(Object.assign({}, categoriesObj))
+
+    const sortings = ref(Object.assign({ alphabet: Order.None }, categoriesObj))
 
     const viewMode = ref<ViewMode>(ViewMode.Grid)
     const currentSection = ref(0)
