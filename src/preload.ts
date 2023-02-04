@@ -21,6 +21,7 @@ type ContextBridgeApi = {
     unmaximize: () => Promise<void>,
     close: () => Promise<void>,
     getProperties: () => Promise<Properties & Resize>,
+    onMessage: (callback: (event: IpcRendererEvent, res: string) => void) => void
     onResize: (callback: (event: IpcRendererEvent, res: Resize) => void) => void
 }
 

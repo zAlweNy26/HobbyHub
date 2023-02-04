@@ -1,9 +1,14 @@
+<!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
 <script setup lang="ts">
 import { ref } from 'vue'
-import { arrow, computePosition, flip, offset, shift, Placement } from "@floating-ui/vue"
+import type { Placement } from "@floating-ui/vue";
+import { arrow, computePosition, flip, offset, shift } from "@floating-ui/vue"
 
 const props = defineProps({
-    content: String,
+    content: {
+        type: String,
+        required: true
+    },
     disable: {
         type: Boolean,
         default: false
@@ -19,7 +24,9 @@ const props = defineProps({
 })
 
 const isHidden = ref(true)
-const hoverRef = ref<HTMLElement>(), tooltipRef = ref<HTMLElement>(), arrowRef = ref<HTMLElement>()
+const hoverRef = ref<HTMLElement>()
+const tooltipRef = ref<HTMLElement>()
+const arrowRef = ref<HTMLElement>()
 
 async function calculatePosition() {
     const { x, y, middlewareData, placement } = await computePosition(
@@ -71,20 +78,20 @@ const show = () => {
 </script>
 
 <template>
-    <div class="inline-flex">
-        <div ref="hoverRef" class="inline-flex" @click="hide" @mouseenter="show"
-            @mouseleave="hide" @focus="show" @blur="hide">
-            <slot />
-        </div>
-        <Transition v-if="!disable" v-show="!isHidden" enter-active-class="transition ease-out"
-            enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition ease-in"
-            leave-from-class="opacity-100" leave-to-class="opacity-0">
-            <div ref="tooltipRef"
-                class="absolute top-0 left-0 z-40 px-2 py-1 text-xs font-bold rounded-md select-none bg-neutral-focus text-base-100 w-max">
-                <div v-if="props.arrow"
-                    class="absolute w-2 h-2 rotate-45 bg-neutral-focus" ref="arrowRef"></div>
-                {{ props.content }}
-            </div>
-        </Transition>
-    </div>
+	<div class="inline-flex">
+		<div ref="hoverRef" class="inline-flex" @click="hide" @mouseenter="show"
+			@mouseleave="hide" @focus="show" @blur="hide">
+			<slot />
+		</div>
+		<Transition v-if="!disable" v-show="!isHidden" enter-active-class="transition ease-out"
+			enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition ease-in"
+			leave-from-class="opacity-100" leave-to-class="opacity-0">
+			<div ref="tooltipRef"
+				class="absolute top-0 left-0 z-40 w-max select-none rounded-md bg-neutral-focus px-2 py-1 text-xs font-bold text-base-100">
+				<div v-if="props.arrow"
+					ref="arrowRef" class="absolute h-2 w-2 rotate-45 bg-neutral-focus" />
+				{{ props.content }}
+			</div>
+		</Transition>
+	</div>
 </template>

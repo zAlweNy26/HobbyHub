@@ -3,14 +3,14 @@ import { Popover, PopoverButton, PopoverPanel, Dialog, DialogPanel, TransitionCh
 import { Icon } from '@iconify/vue'
 import Tooltip from '@components/Tooltip.vue'
 import ListHandler from '@components/ListHandler.vue'
-import { useHeaderStore } from '@stores/headerStore'
+import { usePageStore } from '@stores/pageStore'
 import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import ThemeButton from '@components/ThemeButton.vue'
 
-const header = useHeaderStore()
-const { currentSection, viewMode, sortings, sectionsList, categories } = storeToRefs(header)
+const page = usePageStore()
+const { currentSection, viewMode, sortings, sectionsList, categories } = storeToRefs(page)
 
 const searchItem = ref("")
 const zoom = ref(100)
@@ -25,7 +25,7 @@ const updateZoom = (perc: number) => {
 
 const updateName = (event: FocusEvent) => {
     const target = event.target as HTMLElement
-    header.updateSection(currentSection.value, target.innerText.trim())
+    page.updateSection(currentSection.value, target.innerText.trim())
 }
 
 const changeSection = (section: number) => {
@@ -34,7 +34,7 @@ const changeSection = (section: number) => {
 }
 
 const searchForItem = () => {
-
+	console.log("search")
 }
 
 const blurOnEnter = (event: KeyboardEvent) => {
@@ -50,162 +50,164 @@ const updateAlphabeticalOrder = () => {
 </script>
 
 <template>
-    <div class="justify-between min-h-0 gap-2 navbar shrink-0 bg-primary">
-        <div class="gap-2 navbar-start w-[45%]">
-            <Tooltip content="Menu">
-                <button class="btn btn-sm btn-ghost btn-square text-base-100" @click="showSide = true"
-                    aria-label="Menu">
-                    <Icon icon="fluent:navigation-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
-            <span class="overflow-hidden font-bold whitespace-nowrap text-base-100 max-w-[75%]" contenteditable="true" @focusout="updateName"
-                @keypress="blurOnEnter">{{ sectionsList[currentSection] }}</span>
-        </div>
-        <div class="gap-2 navbar-end">
-            <div
-                class="flex items-center shrink-0 justify-center gap-2 p-0.5 overflow-hidden rounded-full select-none outline-2 outline outline-base-100">
-                <Tooltip content="Zoom out">
-                    <button class="btn btn-xs btn-ghost btn-circle text-base-100" aria-label="Zoom out"
-                        @click="updateZoom(-10)">
-                        <Icon icon="fluent:zoom-out-24-filled" class="w-6 h-6" />
-                    </button>
-                </Tooltip>
-                <span class="text-xs font-bold text-base-100">{{ Math.round(zoom) }}%</span>
-                <Tooltip content="Zoom in">
-                    <button class="btn btn-xs btn-ghost btn-circle text-base-100" aria-label="Zoom in"
-                        @click="updateZoom(10)">
-                        <Icon icon="fluent:zoom-in-24-filled" class="w-6 h-6" />
-                    </button>
-                </Tooltip>
-            </div>
-            <div
-                class="mx-0 before:rounded-t-xl after:rounded-b-xl divider divider-horizontal after:bg-base-100/25 before:bg-base-100/25">
-            </div>
-            <Popover v-slot="{ open }" class="relative inline-flex">
-                <PopoverButton as="template">
-                    <Tooltip content="Sorting" :disable="open">
-                        <button class="btn btn-sm btn-ghost btn-square text-base-100" aria-label="Sorting"
-                            @click="showStatus = showPlatform = false">
-                            <Icon icon="fluent:arrow-sort-down-lines-24-filled" class="w-6 h-6" />
-                        </button>
-                    </Tooltip>
-                </PopoverButton>
-                <Transition enter-active-class="transition ease-out" enter-from-class="transform scale-90 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100" leave-active-class="transition ease-in"
-                    leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
-                    <PopoverPanel class="absolute z-10 transform -translate-x-1/2 translate-y-3/4 left-1/2">
-                        <div class="flex gap-2 p-2 shadow-xl rounded-xl bg-base-300">
-                            <Tooltip content="Alphabetical">
-                                <label class="btn btn-sm btn-ghost btn-square swap"
-                                    :class="{ '!btn-primary': sortings.alphabet != Order.None }"
-                                    aria-label="Alphabetical">
-                                    <input type="checkbox" class="modal-toggle"
-                                        :checked="sortings.alphabet != Order.None" @click="updateAlphabeticalOrder" />
-                                    <Icon icon="fluent:text-sort-ascending-16-filled" class="w-6 h-6 swap-on" />
-                                    <Icon icon="fluent:text-sort-descending-16-filled" class="w-6 h-6 swap-off" />
-                                </label>
-                            </Tooltip>
-                            <ListHandler v-for="cat in categories" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
-                                handler="sortings" :category="cat.name.toLowerCase()" :values="cat.options" />
-                        </div>
-                    </PopoverPanel>
-                </Transition>
-            </Popover>
-            <Popover v-slot="{ open }" class="relative inline-flex">
-                <PopoverButton as="template">
-                    <Tooltip content="Filters" :disable="open">
-                        <button class="btn btn-sm btn-ghost btn-square text-base-100" aria-label="Filters"
-                            @click="showStatus = showPlatform = false">
-                            <Icon icon="fluent:filter-24-filled" class="w-6 h-6" />
-                        </button>
-                    </Tooltip>
-                </PopoverButton>
-                <Transition enter-active-class="transition ease-out" enter-from-class="transform scale-90 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100" leave-active-class="transition ease-in"
-                    leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
-                    <PopoverPanel class="absolute z-10 transform -translate-x-1/2 translate-y-3/4 left-1/2">
-                        <div class="flex gap-2 p-2 shadow-xl rounded-xl bg-base-300">
-                            <ListHandler v-for="cat in categories" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
-                                handler="filters" :category="cat.name.toLowerCase()" :values="cat.options" />
-                        </div>
-                    </PopoverPanel>
-                </Transition>
-            </Popover>
-            <div
-                class="mx-0 before:rounded-t-xl after:rounded-b-xl divider divider-horizontal after:bg-base-100/25 before:bg-base-100/25">
-            </div>
-            <Tooltip content="Grid View">
-                <button
-                    class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
-                    :disabled="viewMode == ViewMode.Grid" @click="header.changeViewMode(ViewMode.Grid)"
-                    aria-label="Grid View">
-                    <Icon icon="fluent:grid-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
-            <Tooltip content="Detail List View">
-                <button
-                    class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
-                    :disabled="viewMode == ViewMode.Detail" @click="header.changeViewMode(ViewMode.Detail)"
-                    aria-label="Detail List View">
-                    <Icon icon="fluent:apps-list-detail-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
-            <Tooltip content="Compact List View">
-                <button
-                    class="btn btn-sm btn-ghost btn-square text-base-100 disabled:text-base-100 disabled:bg-primary-focus"
-                    :disabled="viewMode == ViewMode.Compact" @click="header.changeViewMode(ViewMode.Compact)"
-                    aria-label="Compact List View">
-                    <Icon icon="fluent:text-bullet-list-ltr-24-filled" class="w-6 h-6" />
-                </button>
-            </Tooltip>
-        </div>
-    </div>
-    <TransitionRoot as="template" :show="showSide">
-        <Dialog as="div" class="relative z-50" @close="showSide = false">
-            <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
-                enter-to="opacity-100" leave="ease-in-out" leave-from="opacity-100" leave-to="opacity-0">
-                <div class="fixed inset-0 transition-opacity bg-opacity-50 top-6 bg-base-100" />
-            </TransitionChild>
-            <div class="fixed inset-0 overflow-hidden top-6">
-                <div class="absolute inset-0 overflow-hidden top-6">
-                    <div class="fixed inset-y-0 left-0 flex max-w-full pointer-events-none top-6">
-                        <TransitionChild as="template" enter="transform transition ease-in-out duration-300"
-                            enter-from="-translate-x-full" enter-to="translate-x-0"
-                            leave="transform transition ease-in-out duration-300" leave-from="translate-x-0"
-                            leave-to="-translate-x-full">
-                            <DialogPanel class="relative w-screen pointer-events-auto max-w-fit">
-                                <div class="flex flex-col h-full max-w-[15rem] gap-2 p-2 overflow-y-auto shadow-xl bg-base-300">
-                                    <div class="flex items-center justify-between gap-4 overflow-hidden">
-                                        <ThemeButton />
-                                        <button class="gap-2 px-1 btn btn-sm btn-ghost" aria-label="Open Settings">
-                                            <Icon icon="fluent:settings-24-filled" class="w-6 h-6" />
-                                            <p class="text-base capitalize">Settings</p>
-                                        </button>
-                                        <!--<Tooltip content="Close Menu"> Problem with Transition components -->
-                                        <button class="btn btn-sm btn-ghost btn-square" @click="showSide = false"
-                                            aria-label="Close Menu">
-                                            <Icon icon="fluent:dismiss-24-filled" class="w-6 h-6" />
-                                        </button>
-                                        <!--</Tooltip>-->
-                                    </div>
-                                    <div class="my-4 input-group-bordered">
-                                        <button class="btn btn-sm btn-square btn-primary" @click="searchForItem" aria-label="Search an item">
-                                            <Icon class="w-6 h-6" icon="fluent:search-24-filled" />
-                                        </button>
-                                        <input v-model="searchItem" type="text" class="input !input-sm w-full" 
-                                            placeholder="Enter an item..." @keyup.enter="searchForItem" />
-                                    </div>
-                                    <button v-for="(section, index) in sectionsList" :key="section" :aria-label="section"
-                                        class="justify-start gap-2 px-1 btn flex-nowrap btn-sm btn-ghost" @click="changeSection(index)">
-                                        <Icon class="w-6 h-6 shrink-0" icon="fluent:archive-24-filled" />
-                                        <p class="normal-case truncate">{{ section }}</p>
-                                    </button>
-                                </div>
-                            </DialogPanel>
-                        </TransitionChild>
-                    </div>
-                </div>
-            </div>
-        </Dialog>
-    </TransitionRoot>
+	<div class="navbar min-h-0 shrink-0 justify-between gap-2 bg-primary">
+		<div class="navbar-start w-[45%] gap-2">
+			<Tooltip content="Menu">
+				<button class="btn-ghost btn-square btn-sm btn text-base-100" aria-label="Menu"
+					@click="showSide = true">
+					<Icon icon="fluent:navigation-24-filled" class="h-6 w-6" />
+				</button>
+			</Tooltip>
+			<span class="max-w-[75%] overflow-hidden whitespace-nowrap font-bold text-base-100" contenteditable="true" @focusout="updateName"
+				@keypress="blurOnEnter">{{ sectionsList[currentSection] }}</span>
+		</div>
+		<div class="navbar-end gap-2">
+			<div
+				class="flex shrink-0 select-none items-center justify-center gap-2 overflow-hidden rounded-full p-0.5 outline outline-2 outline-base-100">
+				<Tooltip content="Zoom out">
+					<button class="btn-ghost btn-xs btn-circle btn text-base-100" aria-label="Zoom out"
+						@click="updateZoom(-10)">
+						<Icon icon="fluent:zoom-out-24-filled" class="h-6 w-6" />
+					</button>
+				</Tooltip>
+				<span class="text-xs font-bold text-base-100">{{ Math.round(zoom) }}%</span>
+				<Tooltip content="Zoom in">
+					<button class="btn-ghost btn-xs btn-circle btn text-base-100" aria-label="Zoom in"
+						@click="updateZoom(10)">
+						<Icon icon="fluent:zoom-in-24-filled" class="h-6 w-6" />
+					</button>
+				</Tooltip>
+			</div>
+			<div
+				class="divider divider-horizontal mx-0 before:rounded-t-xl before:bg-base-100/25 after:rounded-b-xl after:bg-base-100/25" />
+			<Popover v-slot="{ open }" class="relative inline-flex">
+				<PopoverButton as="template">
+					<Tooltip content="Sorting" :disable="open">
+						<button class="btn-ghost btn-sm btn-square btn text-base-100" aria-label="Sorting"
+							@click="showStatus = showPlatform = false">
+							<Icon icon="fluent:arrow-sort-down-lines-24-filled" class="h-6 w-6" />
+						</button>
+					</Tooltip>
+				</PopoverButton>
+				<Transition enter-active-class="transition ease-out" enter-from-class="transform scale-90 opacity-0"
+					enter-to-class="transform scale-100 opacity-100" leave-active-class="transition ease-in"
+					leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
+					<PopoverPanel class="absolute left-1/2 z-10 -translate-x-1/2 translate-y-3/4">
+						<div class="flex gap-2 rounded-xl bg-base-300 p-2 shadow-xl">
+							<Tooltip content="Alphabetical">
+								<label class="swap btn-ghost btn-sm btn-square btn"
+									:class="{ '!btn-primary': sortings.alphabet != Order.None }"
+									aria-label="Alphabetical">
+									<input type="checkbox" class="modal-toggle"
+										:checked="sortings.alphabet != Order.None" @click="updateAlphabeticalOrder">
+									<Icon icon="fluent:text-sort-ascending-16-filled" class="swap-on h-6 w-6" />
+									<Icon icon="fluent:text-sort-descending-16-filled" class="swap-off h-6 w-6" />
+								</label>
+							</Tooltip>
+							<ListHandler v-for="cat in categories" :key="cat.name" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
+								handler="sortings" :category="cat.name.toLowerCase()" :values="cat.options" />
+						</div>
+					</PopoverPanel>
+				</Transition>
+			</Popover>
+			<Popover v-slot="{ open }" class="relative inline-flex">
+				<PopoverButton as="template">
+					<Tooltip content="Filters" :disable="open">
+						<button class="btn-ghost btn-sm btn-square btn text-base-100" aria-label="Filters"
+							@click="showStatus = showPlatform = false">
+							<Icon icon="fluent:filter-24-filled" class="h-6 w-6" />
+						</button>
+					</Tooltip>
+				</PopoverButton>
+				<Transition enter-active-class="transition ease-out" enter-from-class="transform scale-90 opacity-0"
+					enter-to-class="transform scale-100 opacity-100" leave-active-class="transition ease-in"
+					leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
+					<PopoverPanel class="absolute left-1/2 z-10 -translate-x-1/2 translate-y-3/4">
+						<div class="flex gap-2 rounded-xl bg-base-300 p-2 shadow-xl">
+							<ListHandler v-for="cat in categories" :key="cat.name" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
+								handler="filters" :category="cat.name.toLowerCase()" :values="cat.options" />
+						</div>
+					</PopoverPanel>
+				</Transition>
+			</Popover>
+			<div
+				class="divider divider-horizontal mx-0 before:rounded-t-xl before:bg-base-100/25 after:rounded-b-xl after:bg-base-100/25" />
+			<Tooltip content="Grid View">
+				<button
+					class="btn-ghost btn-sm btn-square btn text-base-100 disabled:bg-primary-focus disabled:text-base-100"
+					:disabled="viewMode == ViewMode.Grid" aria-label="Grid View"
+					@click="page.changeViewMode(ViewMode.Grid)">
+					<Icon icon="fluent:grid-24-filled" class="h-6 w-6" />
+				</button>
+			</Tooltip>
+			<Tooltip content="Detail List View">
+				<button
+					class="btn-ghost btn-sm btn-square btn text-base-100 disabled:bg-primary-focus disabled:text-base-100"
+					:disabled="viewMode == ViewMode.Detail" aria-label="Detail List View"
+					@click="page.changeViewMode(ViewMode.Detail)">
+					<Icon icon="fluent:apps-list-detail-24-filled" class="h-6 w-6" />
+				</button>
+			</Tooltip>
+			<Tooltip content="Compact List View">
+				<button
+					class="btn-ghost btn-sm btn-square btn text-base-100 disabled:bg-primary-focus disabled:text-base-100"
+					:disabled="viewMode == ViewMode.Compact" aria-label="Compact List View"
+					@click="page.changeViewMode(ViewMode.Compact)">
+					<Icon icon="fluent:text-bullet-list-ltr-24-filled" class="h-6 w-6" />
+				</button>
+			</Tooltip>
+		</div>
+	</div>
+	<TransitionRoot as="template" :show="showSide">
+		<Dialog as="div" class="relative z-50" @close="showSide = false">
+			<TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
+				enter-to="opacity-100" leave="ease-in-out" leave-from="opacity-100" leave-to="opacity-0">
+				<div class="fixed inset-0 top-6 bg-base-100/50 transition-opacity" />
+			</TransitionChild>
+			<div class="fixed inset-0 top-6 overflow-hidden">
+				<div class="absolute inset-0 top-6 overflow-hidden">
+					<div class="pointer-events-none fixed inset-y-0 left-0 top-6 flex max-w-full">
+						<TransitionChild as="template" enter="transform transition ease-in-out duration-300"
+							enter-from="-translate-x-full" enter-to="translate-x-0"
+							leave="transform transition ease-in-out duration-300" leave-from="translate-x-0"
+							leave-to="-translate-x-full">
+							<DialogPanel class="pointer-events-auto relative w-screen max-w-fit">
+								<div class="flex h-full max-w-[15rem] flex-col gap-2 overflow-y-auto bg-base-300 p-2 shadow-xl">
+									<div class="flex items-center justify-between gap-4 overflow-hidden">
+										<ThemeButton />
+										<button class="btn-ghost btn-sm btn gap-2 px-1" aria-label="Open Settings">
+											<Icon icon="fluent:settings-24-filled" class="h-6 w-6" />
+											<p class="text-base capitalize">
+												Settings
+											</p>
+										</button>
+										<!--<Tooltip content="Close Menu"> Problem with Transition components -->
+										<button class="btn-ghost btn-sm btn-square btn" aria-label="Close Menu"
+											@click="showSide = false">
+											<Icon icon="fluent:dismiss-24-filled" class="h-6 w-6" />
+										</button>
+										<!--</Tooltip>-->
+									</div>
+									<div class="input-group-bordered my-4">
+										<button class="btn-primary btn-sm btn-square btn" aria-label="Search an item" @click="searchForItem">
+											<Icon class="h-6 w-6" icon="fluent:search-24-filled" />
+										</button>
+										<input v-model="searchItem" type="text" class="input !input-sm w-full" 
+											placeholder="Enter an item..." @keyup.enter="searchForItem">
+									</div>
+									<button v-for="(section, index) in sectionsList" :key="section" :aria-label="section"
+										class="btn-ghost btn-sm btn flex-nowrap justify-start gap-2 px-1" @click="changeSection(index)">
+										<Icon class="h-6 w-6 shrink-0" icon="fluent:archive-24-filled" />
+										<p class="truncate normal-case">
+											{{ section }}
+										</p>
+									</button>
+								</div>
+							</DialogPanel>
+						</TransitionChild>
+					</div>
+				</div>
+			</div>
+		</Dialog>
+	</TransitionRoot>
 </template>

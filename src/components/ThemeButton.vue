@@ -1,11 +1,3 @@
-<template>
-	<label class="btn btn-sm btn-ghost btn-square swap" aria-label="Change theme">
-		<input type="checkbox" class="modal-toggle" :checked="isDark" @click="toggleTheme" />
-		<Icon icon="eva:moon-fill" class="w-6 h-6 swap-off" />
-		<Icon icon="eva:sun-fill" class="w-6 h-6 swap-on" />
-	</label>
-</template>
-
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { onMounted } from 'vue'
@@ -32,3 +24,11 @@ onMounted(() => {
 	setTheme(isDark.value)
 })
 </script>
+
+<template>
+	<label class="swap btn-ghost btn-sm btn-square btn" aria-label="Change theme">
+		<input type="checkbox" class="modal-toggle" :checked="isDark" @click="toggleTheme">
+		<Icon icon="eva:moon-fill" class="swap-off h-6 w-6" />
+		<Icon icon="eva:sun-fill" class="swap-on h-6 w-6" />
+	</label>
+</template>

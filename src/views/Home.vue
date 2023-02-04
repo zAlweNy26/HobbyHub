@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
 import Card from '@components/Card.vue'
-import { useHeaderStore } from '@stores/headerStore'
-import { ICard, ViewMode, Order } from '@/interfaces'
+import { usePageStore } from '@stores/pageStore'
+import type { ICard} from '@/interfaces';
+import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 
-const header = useHeaderStore()
-const { viewMode, sortings, filters, categories } = storeToRefs(header)
+const page = usePageStore()
+const { viewMode, sortings, filters, categories } = storeToRefs(page)
 
 const cards = reactive<ICard[]>([
     {
@@ -101,12 +102,12 @@ const deleteCard = (index: number) => {
 </script>
 
 <template>
-    <div class="flex flex-wrap content-start overflow-y-auto grow" :class="{
-        'gap-2 p-2 justify-start': viewMode != ViewMode.Grid,
-        'justify-around gap-4 p-4': viewMode == ViewMode.Grid
-    }">
-        <Card :content="templateCard" :mode="viewMode" :index="templateCard.index" @save="saveCard" />
-        <Card v-for="card in computedCards" :key="card.index" :content="card" :index="card.index" 
-            :mode="viewMode" @delete="deleteCard" @save="saveCard" />
-    </div>
+	<div class="flex grow flex-wrap content-start overflow-y-auto" :class="{
+		'gap-2 p-2 justify-start': viewMode != ViewMode.Grid,
+		'justify-around gap-4 p-4': viewMode == ViewMode.Grid
+	}">
+		<Card :content="templateCard" :mode="viewMode" :index="templateCard.index" @save="saveCard" />
+		<Card v-for="card in computedCards" :key="card.index" :content="card" :index="card.index" 
+			:mode="viewMode" @delete="deleteCard" @save="saveCard" />
+	</div>
 </template>

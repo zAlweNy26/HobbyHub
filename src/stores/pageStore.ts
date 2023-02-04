@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { ViewMode, Order, ICategory } from '@/interfaces'
+import type { ICategory } from '@/interfaces';
+import { ViewMode, Order } from '@/interfaces'
 
-export const useHeaderStore = defineStore('header', () => {
+export const usePageStore = defineStore('page', () => {
     const categories = ref<ICategory[]>([
         {
             name: "Status",
