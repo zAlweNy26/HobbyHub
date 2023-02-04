@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron"
+import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 import { ContextBridgeApi, Resize } from '../../src/preload'
 
 const exposedApi: ContextBridgeApi = {
@@ -8,7 +8,7 @@ const exposedApi: ContextBridgeApi = {
   unmaximize: () => ipcRenderer.invoke('unmaximize-win'),
   close: () => ipcRenderer.invoke('close-win'),
   getProperties: () => ipcRenderer.invoke('win-properties'),
-  onResize: (callback: (event: Electron.IpcRendererEvent, res: Resize) => void) => {
+  onResize: (callback: (event: IpcRendererEvent, res: Resize) => void) => {
     ipcRenderer.on('resize-win', (e, args) => callback(e, JSON.parse(args)))
   }
 }

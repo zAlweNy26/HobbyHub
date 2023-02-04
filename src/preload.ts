@@ -1,3 +1,5 @@
+import type { IpcRendererEvent } from 'electron'
+
 interface Properties {
     zoom: number
     title: string
@@ -19,7 +21,7 @@ type ContextBridgeApi = {
     unmaximize: () => Promise<void>,
     close: () => Promise<void>,
     getProperties: () => Promise<Properties & Resize>,
-    onResize: (callback: (event: Electron.IpcRendererEvent, res: Resize) => void) => void
+    onResize: (callback: (event: IpcRendererEvent, res: Resize) => void) => void
 }
 
 export {

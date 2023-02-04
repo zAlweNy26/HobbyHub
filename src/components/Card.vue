@@ -49,8 +49,8 @@ const saveCard = () => {
     if (props.index == -1) currentCard.value.added = Date.now() / 1000
     if (currentCard.value.image == "") currentCard.value.image = "/image_template.png"
     currentCard.value.updated = Date.now() / 1000
-    baseCard.value = JSON.parse(JSON.stringify(currentCard.value))
-    emit("save", props.index, baseCard.value)
+    emit("save", props.index, JSON.parse(JSON.stringify(currentCard.value)))
+    if (props.index != -1) baseCard.value = JSON.parse(JSON.stringify(currentCard.value))
 }
 
 const blurOnEnter = (event: KeyboardEvent) => {
@@ -152,13 +152,11 @@ const updateCardTag = (value: string, type: string) => {
                                 <div class="flex gap-2">
                                     <div class="relative shrink-0">
                                         <img v-if="index > -1" class="object-cover object-center w-20 h-[7.5rem] rounded-lg select-none" draggable="false" :src="currentCard.image" />
-                                        <div v-else class="flex items-center justify-center rounded-lg transition-colors text-neutral w-20 h-[7.5rem] bg-base-100 hover:bg-base-300">
-                                            <Icon icon="fluent:add-16-filled" class="w-8 h-8" />
-                                        </div>
-                                        <div class="absolute top-0 left-0 transition-colors rounded-lg hover:bg-base-100/50">
+                                        <div v-else class="flex items-center justify-center rounded-lg transition-colors text-neutral w-20 h-[7.5rem] bg-base-100 hover:bg-base-300"></div>
+                                        <div class="absolute top-0 left-0 transition-colors rounded-lg bg-base-100/25 hover:bg-base-100/50">
                                             <label for="imageInputBox" class="w-20 h-[7.5rem] flex justify-center p-4 text-sm transition border-2 border-dashed rounded-lg cursor-pointer border-neutral hover:border-neutral-focus">
                                                 <div class="flex flex-col items-center justify-center">
-                                                    <Icon icon="eva:cloud-upload-outline" class="w-8 h-8" />
+                                                    <Icon icon="fluent:camera-24-filled" class="w-8 h-8" />
                                                 </div>
                                                 <input id="imageInputBox" type="file" class="sr-only" accept=".png, .jpeg, .jpg, .svg" />
                                             </label>

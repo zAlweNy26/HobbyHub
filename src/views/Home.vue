@@ -84,10 +84,7 @@ const computedCards = computed(() => {
 const templateCard = {
     name: 'Name', 
     image: '', 
-    tags: [
-        { type: 'status', value: "None" },
-        { type: 'platform', value: "None" },
-    ], 
+    tags: categories.value.map(c => { return { type: c.name.toLowerCase(), value: "None" } }), 
     added: 0, 
     updated: 0,
     index: -1
