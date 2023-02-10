@@ -25,7 +25,7 @@ const indexHtml = join(process.env.DIST, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'HobbiesTracker',
+    title: 'HobbyHub',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     backgroundColor: "#27272A",
     minWidth: 600,

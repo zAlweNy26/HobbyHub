@@ -1,20 +1,36 @@
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel, Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { 
+	Popover, PopoverButton, PopoverPanel, Dialog, DialogPanel, TransitionChild,
+	Listbox, ListboxButton, ListboxOptions, ListboxOption, ListboxLabel, TransitionRoot
+} from '@headlessui/vue'
 import { Icon } from '@iconify/vue'
 import Tooltip from '@components/Tooltip.vue'
 import ListHandler from '@components/ListHandler.vue'
+import _ from 'lodash'
 import { usePageStore } from '@stores/pageStore'
+import { useSettingsStore } from '@stores/settingsStore'
 import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import Modal from '@components/Modal.vue'
+import { ref, watch } from 'vue'
 import ThemeButton from '@components/ThemeButton.vue'
 
 const page = usePageStore()
+const settings = useSettingsStore()
 const { currentSection, viewMode, sortings, sectionsList, categories } = storeToRefs(page)
+const settingsState = ref(_.cloneDeep(settings.$state))
 
 const searchItem = ref("")
 const zoom = ref(100)
-const showStatus = ref(false), showPlatform = ref(false), showSide = ref(false)
+const showStatus = ref(false), showPlatform = ref(false)
+const showSide = ref(false), enableApply = ref(false)
+const modalSettings = ref<InstanceType<typeof Modal>>()
+
+watch(settingsState, () => {
+	if (!_.isEqual(settingsState.value, settings.$state)) {
+		enableApply.value = true
+	}
+}, { deep: true })
 
 window.electron.getProperties().then(p => zoom.value = p.zoom * 100)
 
@@ -33,6 +49,13 @@ const changeSection = (section: number) => {
     showSide.value = false
 }
 
+const openSettings = () => {
+	showSide.value = false
+	settingsState.value = _.cloneDeep(settings.$state)
+	modalSettings.value?.openCard()
+	enableApply.value = false
+}
+
 const searchForItem = () => {
 	console.log("search")
 }
@@ -46,6 +69,11 @@ const updateAlphabeticalOrder = () => {
     if (sortings.value.alphabet == Order.Ascending) sortings.value.alphabet = Order.Descending
     else if (sortings.value.alphabet == Order.Descending) sortings.value.alphabet = Order.None
     else sortings.value.alphabet = Order.Ascending
+}
+
+const applyChanges = () => {
+	settings.$state = settingsState.value
+	enableApply.value = false
 }
 </script>
 
@@ -175,9 +203,9 @@ const updateAlphabeticalOrder = () => {
 								<div class="flex h-full max-w-[15rem] flex-col gap-2 overflow-y-auto bg-base-300 p-2 shadow-xl">
 									<div class="flex items-center justify-between gap-4 overflow-hidden">
 										<ThemeButton />
-										<button class="btn-ghost btn-sm btn gap-2 px-1" aria-label="Open Settings">
+										<button class="btn-ghost btn-sm btn gap-2 px-1" aria-label="Open Settings" @click="openSettings">
 											<Icon icon="fluent:settings-24-filled" class="h-6 w-6" />
-											<p class="text-base capitalize">
+											<p class="text-sm capitalize">
 												Settings
 											</p>
 										</button>
@@ -192,9 +220,14 @@ const updateAlphabeticalOrder = () => {
 										<button class="btn-primary btn-sm btn-square btn" aria-label="Search an item" @click="searchForItem">
 											<Icon class="h-6 w-6" icon="fluent:search-24-filled" />
 										</button>
-										<input v-model="searchItem" type="text" class="input !input-sm w-full" 
-											placeholder="Enter an item..." @keyup.enter="searchForItem">
+										<input v-model="searchItem" type="text" class="input !input-sm w-full" placeholder="Enter an item..." @keyup.enter="searchForItem">
 									</div>
+									<button aria-label="Add" class="btn-primary btn-sm btn mb-4 gap-2 px-1">
+										<Icon class="h-6 w-6 shrink-0" icon="fluent:add-24-filled" />
+										<p class="font-extrabold">
+											Add
+										</p>
+									</button>
 									<button v-for="(section, index) in sectionsList" :key="section" :aria-label="section"
 										class="btn-ghost btn-sm btn flex-nowrap justify-start gap-2 px-1" @click="changeSection(index)">
 										<Icon class="h-6 w-6 shrink-0" icon="fluent:archive-24-filled" />
@@ -210,4 +243,49 @@ const updateAlphabeticalOrder = () => {
 			</div>
 		</Dialog>
 	</TransitionRoot>
+	<Modal ref="modalSettings">
+		<div class="flex flex-col gap-2">
+			<div class="flex justify-between gap-2">
+				<p class="text-2xl font-black text-primary">
+					Settings
+				</p>
+				<button class="btn-ghost btn-xs btn-square btn hover:bg-error hover:text-base-100"
+					@click="modalSettings?.closeCard()">
+					<Icon icon="fluent:dismiss-16-filled" class="h-4 w-4" />
+				</button>
+			</div>
+			<div class="flex items-center gap-4">
+				<Listbox v-model="settingsState.currentLanguage">
+					<div class="relative">
+						<ListboxLabel class="text-sm">
+							Language :
+						</ListboxLabel>
+						<ListboxButton class="mt-1 flex cursor-pointer items-center gap-2 rounded-lg border-2 border-neutral bg-base-300 px-2 py-1 text-sm shadow-lg">
+							<Icon icon="fluent:local-language-16-filled" class="h-4 w-4 shrink-0" />
+							<p>{{ settingsState.currentLanguage }}</p>
+							<Icon icon="fluent:chevron-up-down-16-filled" class="h-4 w-4 shrink-0" />
+						</ListboxButton>
+						<Transition leave-active-class="transition ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+							<ListboxOptions
+								class="absolute mt-2 w-full cursor-pointer overflow-hidden rounded-lg bg-base-300 text-sm shadow-lg">
+								<ListboxOption v-for="lang in settings.languagesList" v-slot="{ active, selected }" :key="lang" :value="lang" as="template">
+									<li :class="{ 'bg-primary text-base-100': active, 'bg-secondary text-base-100 font-bold': selected }"
+										class="flex items-center gap-2 px-2 py-1 font-medium transition-colors">
+										<p class="truncate">
+											{{ lang }}
+										</p>
+									</li>
+								</ListboxOption>
+							</ListboxOptions>
+						</Transition>
+					</div>
+				</Listbox>
+			</div>
+			<button type="button" class="btn-info btn-sm btn gap-2 self-center px-2 font-bold normal-case"
+				:disabled="!enableApply" @click="applyChanges">
+				<p>Apply</p>
+				<Icon icon="fluent:checkmark-12-filled" class="h-6 w-6" />
+			</button>
+		</div>
+	</Modal>
 </template>

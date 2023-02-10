@@ -1,6 +1,6 @@
 ---
 name: 🥺 Help wanted
-about: Confuse about the use of HobbiesTracker
+about: Confuse about the use of HobbyHub
 title: "[Help] the title of help wanted report"
 labels: help wanted
 assignees: ''

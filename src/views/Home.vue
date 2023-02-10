@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
+import _ from 'lodash'
 import Card from '@components/Card.vue'
 import { usePageStore } from '@stores/pageStore'
-import type { ICard} from '@/interfaces';
+import type { ICard } from '@/interfaces'
 import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 
@@ -49,8 +50,8 @@ const cards = reactive<ICard[]>([
 ])
 
 const computedCards = computed(() => {
-    let sortedCards: (ICard & { index: number })[] = JSON.parse(JSON.stringify(cards))
-    sortedCards.map((v, i) => Object.assign(v, { index: i }))
+    let sortedCards = _.cloneDeep(cards)
+    sortedCards.map((v, i) => _.assign(v, { index: i }))
     
     Object.keys(filters.value).forEach((f, i) => {
         const filter = Object.values(filters.value)[i] as number
@@ -79,7 +80,7 @@ const computedCards = computed(() => {
         }
     })
 
-    return sortedCards
+    return sortedCards as (ICard & { index: number })[]
 })
 
 const templateCard = {
@@ -87,8 +88,7 @@ const templateCard = {
     image: '', 
     tags: categories.value.map(c => { return { type: c.name.toLowerCase(), value: "None" } }), 
     added: 0, 
-    updated: 0,
-    index: -1
+    updated: 0
 }
 
 const saveCard = (index: number, card: ICard) => {
@@ -106,8 +106,8 @@ const deleteCard = (index: number) => {
 		'gap-2 p-2 justify-start': viewMode != ViewMode.Grid,
 		'justify-around gap-4 p-4': viewMode == ViewMode.Grid
 	}">
-		<Card :content="templateCard" :mode="viewMode" :index="templateCard.index" @save="saveCard" />
-		<Card v-for="card in computedCards" :key="card.index" :content="card" :index="card.index" 
+		<Card :content="templateCard" :mode="viewMode" :index="-1" @save="saveCard" />
+		<Card v-for="(card, index) in computedCards" :key="`${card.name}_${index}`" :content="card" :index="card.index" 
 			:mode="viewMode" @delete="deleteCard" @save="saveCard" />
 	</div>
 </template>

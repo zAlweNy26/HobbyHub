@@ -1,7 +1,7 @@
 {
-  "appId": "it.alwe.hobbies-tracker",
+  "appId": "it.alwe.hobbyhub",
   "asar": true,
-  "productName": "HobbiesTracker",
+  "productName": "HobbyHub",
   "icon": "public/favicon.ico",
   "directories": {
     "output": "release/${version}"
