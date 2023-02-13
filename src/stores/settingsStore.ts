@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref } from 'vue'
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -12,3 +12,7 @@ export const useSettingsStore = defineStore('settings', () => {
         currentLanguage
     }
 })
+
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
+}

@@ -28,7 +28,7 @@ async function createWindow() {
     title: 'HobbyHub',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     backgroundColor: "#27272A",
-    minWidth: 600,
+    minWidth: 500,
     minHeight: 500,
     width: 1280,
     height: 720,

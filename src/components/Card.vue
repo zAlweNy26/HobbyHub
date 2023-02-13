@@ -46,7 +46,7 @@ const currentCardIcon = (cat: ICategory) => {
 }
 
 const saveCard = () => {
-	modalCard.value?.closeCard()
+	modalCard.value?.closeModal()
 	if (props.index == -1) currentCard.value.added = Date.now() / 1000
 	if (currentCard.value.image == "") currentCard.value.image = imgTemplate
 	currentCard.value.updated = Date.now() / 1000
@@ -66,11 +66,11 @@ const updateCardName = (event: FocusEvent) => {
 
 const openCard = () => {
 	currentCard.value = _.cloneDeep(baseCard.value)
-	modalCard.value?.openCard()
+	modalCard.value?.openModal()
 }
 
 const deleteCard = () => {
-	modalCard.value?.closeCard()
+	modalCard.value?.closeModal()
 	emit("delete", props.index)
 }
 
@@ -195,7 +195,7 @@ const updateCardTag = (value: string, type: string) => {
 				</div>
 			</div>
 			<button class="btn-ghost btn-square btn-xs btn hover:bg-error hover:text-base-100"
-				@click="modalCard?.closeCard()">
+				@click="modalCard?.closeModal()">
 				<Icon icon="fluent:dismiss-16-filled" class="h-4 w-4" />
 			</button>
 		</div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { computed } from 'vue'
 import _ from 'lodash'
 import Card from '@components/Card.vue'
 import { usePageStore } from '@stores/pageStore'
@@ -8,49 +8,10 @@ import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 
 const page = usePageStore()
-const { viewMode, sortings, filters, categories } = storeToRefs(page)
-
-const cards = reactive<ICard[]>([
-    {
-        name: 'Unpacking', image: 'https://howlongtobeat.com/games/69666_Unpacking_(2021).jpg', tags: [
-            { type: 'status', value: "Completed" },
-            { type: 'platform', value: "Windows" },
-        ], added: 1671835908, updated: 1673624379
-    },
-    {
-        name: 'Animal Crossing: New Horizons', image: 'https://howlongtobeat.com/games/68240_Animal_Crossing_New_Horizons.jpg', tags: [
-            { type: 'status', value: "Paused" },
-            { type: 'platform', value: "Nintendo Switch" },
-        ], added: 23345340, updated: 3452340
-    },
-    {
-        name: 'Elden Ring', image: 'https://howlongtobeat.com/games/68151_Elden_Ring.jpg', tags: [
-            { type: 'status', value: "Not Started" },
-            { type: 'platform', value: "PlayStation" },
-        ], added: 452540, updated: 353453250
-    },
-    {
-        name: 'Dragon Quest XI: Echoes of an Elusive Age: Definitive Edition', image: 'https://howlongtobeat.com/games/39508_Dragon_Quest_XI_In_Search_of_Departed_Time.jpg', tags: [
-            { type: 'status', value: "Completed" },
-            { type: 'platform', value: "Windows" },
-        ], added: 1626457604, updated: 1671835908
-    },
-    {
-        name: 'Cyberpunk 2077', image: 'https://howlongtobeat.com/games/Cyberpunk-2077-2.jpg', tags: [
-            { type: 'status', value: "Dropped" },
-            { type: 'platform', value: "Windows" },
-        ], added: 23542350, updated: 523542350
-    },
-    {
-        name: 'Rocket League', image: 'https://howlongtobeat.com/games/Rocket_League_header.jpg', tags: [
-            { type: 'status', value: "Paused" },
-            { type: 'platform', value: "Xbox" },
-        ], added: 3452345520, updated: 34523450
-    },
-])
+const { viewMode, sortings, filters, categories, cards } = storeToRefs(page)
 
 const computedCards = computed(() => {
-    let sortedCards = _.cloneDeep(cards)
+    let sortedCards = _.cloneDeep(cards.value)
     sortedCards.map((v, i) => _.assign(v, { index: i }))
     
     Object.keys(filters.value).forEach((f, i) => {
@@ -90,24 +51,15 @@ const templateCard = {
     added: 0, 
     updated: 0
 }
-
-const saveCard = (index: number, card: ICard) => {
-    if (index > -1) cards[index] = card
-    else cards.push(card)
-}
-
-const deleteCard = (index: number) => {
-    if (index > -1) cards.splice(index, 1)
-}
 </script>
 
 <template>
-	<div class="flex grow flex-wrap content-start overflow-y-auto" :class="{
+	<div class="flex flex-wrap content-start overflow-y-auto grow" :class="{
 		'gap-2 p-2 justify-start': viewMode != ViewMode.Grid,
 		'justify-around gap-4 p-4': viewMode == ViewMode.Grid
 	}">
-		<Card :content="templateCard" :mode="viewMode" :index="-1" @save="saveCard" />
+		<Card :content="templateCard" :mode="viewMode" :index="-1" @save="page.saveCard" />
 		<Card v-for="(card, index) in computedCards" :key="`${card.name}_${index}`" :content="card" :index="card.index" 
-			:mode="viewMode" @delete="deleteCard" @save="saveCard" />
+			:mode="viewMode" @delete="page.deleteCard" @save="page.saveCard" />
 	</div>
 </template>

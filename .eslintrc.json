@@ -50,6 +50,7 @@
         }],
         "vue/v-on-event-hyphenation": "off",
         "vue/attribute-hyphenation": "off",
-        "tailwindcss/no-custom-classname": "off"
+        "tailwindcss/no-custom-classname": "off",
+        "tailwindcss/classnames-order": "off"
     }
 }

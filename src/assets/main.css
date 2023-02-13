@@ -26,6 +26,9 @@
 }
 
 @layer components {
+    .divider {
+        @apply w-1 m-0 before:rounded-t-xl before:bg-base-100/25 after:rounded-b-xl after:bg-base-100/25
+    }
     .btn-outline {
         @apply border-2;
     }

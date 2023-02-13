@@ -1,4 +1,4 @@
-import type { Raw} from 'vue';
+import type { Raw} from 'vue'
 import { createApp, markRaw } from 'vue'
 import "./assets/main.css"
 import 'animate.css'

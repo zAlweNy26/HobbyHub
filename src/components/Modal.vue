@@ -2,22 +2,22 @@
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 import { ref } from 'vue'
 
-const isCardOpen = ref(false)
+const isOpen = ref(false)
 
-const openCard = () => isCardOpen.value = true
+const openModal = () => isOpen.value = true
 
-const closeCard = () => isCardOpen.value = false
+const closeModal = () => isOpen.value = false
 
 defineExpose({
-    isCardOpen,
-    openCard,
-    closeCard
+    isOpen,
+    openModal,
+    closeModal
 })
 </script>
 
 <template>
-	<TransitionRoot appear :show="isCardOpen" as="template">
-		<Dialog as="div" class="relative z-10" @close="closeCard">
+	<TransitionRoot appear :show="isOpen" as="template">
+		<Dialog as="div" class="relative z-10" @close="closeModal">
 			<TransitionChild as="template" enter="duration-200 ease-out" enter-from="opacity-0" enter-to="opacity-100"
 				leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
 				<div class="fixed inset-0 bg-base-100/50" />
