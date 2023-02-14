@@ -6,6 +6,7 @@
     "moduleResolution": "Node",
     "strict": true,
     "jsx": "preserve",
+    "composite": true,
     "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": false,
@@ -23,7 +24,7 @@
       "@views/*": ["src/views/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]

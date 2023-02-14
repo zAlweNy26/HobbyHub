@@ -39,31 +39,31 @@ const windowAction = (action: string) => {
 </script>
 
 <template>
-	<div class="flex h-screen min-h-screen flex-col scroll-smooth bg-base-100 transition-colors selection:bg-secondary-focus">
-		<div class="navbar min-h-0 shrink-0 select-none bg-primary-focus p-0" style="-webkit-app-region: drag">
-			<div class="navbar-start ml-2 gap-2">
-				<img class="h-4 w-4 object-cover object-center" draggable="false" src="/favicon.ico">
+	<div class="flex flex-col h-screen min-h-screen transition-colors scroll-smooth bg-base-100 selection:bg-secondary-focus">
+		<div class="min-h-0 p-0 select-none navbar shrink-0 bg-primary-focus" style="-webkit-app-region: drag">
+			<div class="gap-2 ml-2 navbar-start">
+				<img class="object-cover object-center w-4 h-4" draggable="false" src="/favicon.ico" alt="HobbyHub Logo">
 				<p class="text-sm font-extrabold text-base-100">
 					{{ winTitle }}
 				</p>
 			</div>
 			<div class="navbar-end">
 				<Tooltip content="Minimize window">
-					<button tabindex="-1" class="btn-ghost btn-xs btn rounded-none text-base-100" aria-label="Minimize window"
+					<button tabindex="-1" class="rounded-none btn-ghost btn-xs btn text-base-100" aria-label="Minimize window"
 						style="-webkit-app-region: no-drag" @click="windowAction('minimize')">
-						<Icon icon="fluent:subtract-16-filled" class="h-5 w-5" />
+						<Icon icon="fluent:subtract-16-filled" class="w-5 h-5" />
 					</button>
 				</Tooltip>
 				<Tooltip :content="isMaximized ? 'Unmaximize window' : 'Maximize window'">
-					<button tabindex="-1" class="btn-ghost btn-xs btn rounded-none text-base-100" aria-label="Unmaximize window"
+					<button tabindex="-1" class="rounded-none btn-ghost btn-xs btn text-base-100" aria-label="Unmaximize window"
 						style="-webkit-app-region: no-drag" @click="windowAction(isMaximized ? 'unmaximize' : 'maximize')">
-						<Icon :icon="isMaximized ? 'fluent:full-screen-minimize-16-filled' : 'fluent:full-screen-maximize-16-filled'" class="h-5 w-5" />
+						<Icon :icon="isMaximized ? 'fluent:full-screen-minimize-16-filled' : 'fluent:full-screen-maximize-16-filled'" class="w-5 h-5" />
 					</button>
 				</Tooltip>
 				<Tooltip content="Close window">
-					<button tabindex="-1" class="btn-ghost btn-xs btn rounded-none text-base-100 hover:bg-error hover:brightness-90"
+					<button tabindex="-1" class="rounded-none btn-ghost btn-xs btn text-base-100 hover:bg-error hover:brightness-90"
 						aria-label="Close window" style="-webkit-app-region: no-drag" @click="windowAction('close')">
-						<Icon icon="fluent:dismiss-16-filled" class="h-5 w-5" />
+						<Icon icon="fluent:dismiss-16-filled" class="w-5 h-5" />
 					</button>
 				</Tooltip>
 			</div>

@@ -1,7 +1,9 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
-import type { Properties, Resize } from '../../src/preload'
+import { JSONFile } from '@commonify/lowdb/lib/adapters/JSONFile'
+import { Low } from '@commonify/lowdb'
+import type { Properties, Resize, DatabaseData } from '../../src/preload'
 
 process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
@@ -17,6 +19,9 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
 }
+
+const adapter = new JSONFile<DatabaseData>(join(app.getPath("userData"), 'db.json'))
+const db = new Low(adapter)
 
 let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
@@ -42,6 +47,79 @@ async function createWindow() {
   })
 
   win.removeMenu()
+
+  await db.read()
+
+  db.data ||= {
+    current: 0,
+    sections: [
+      {
+        name: "Games",
+        categories: [
+          {
+            name: "Status",
+            icon: "ph:spinner-bold",
+            options: [
+              { value: 'None', icon: 'fluent:border-none-24-filled', bg: 'bg-base-200', fg: 'text-neutral' },
+              { value: 'Not Started', icon: 'fluent:record-stop-12-filled', bg: 'bg-neutral' },
+              { value: 'Dropped', icon: 'fluent:drop-12-filled', bg: 'bg-error' },
+              { value: 'Paused', icon: 'fluent:pause-12-filled', bg: 'bg-warning' },
+              { value: 'Completed', icon: 'fluent:checkmark-circle-12-filled', bg: 'bg-success' }
+            ]
+          },
+          {
+            name: "Platform",
+            icon: "fluent:laptop-16-regular",
+            options: [
+              { value: 'None', icon: 'fluent:border-none-24-filled', bg: 'bg-base-200', fg: 'text-neutral' },
+              { value: 'Windows', icon: 'ri:windows-fill', bg: 'bg-[#00A4EF]' },
+              { value: 'Nintendo Switch', icon: 'ri:switch-fill', bg: 'bg-[#DD2020]' },
+              { value: 'Xbox', icon: 'ri:xbox-fill', bg: 'bg-[#107C10]' },
+              { value: 'PlayStation', icon: 'ri:playstation-fill', bg: 'bg-[#006FCD]' }
+            ]
+          }
+        ],
+        cards: [
+          {
+            name: 'Unpacking', image: 'https://howlongtobeat.com/games/69666_Unpacking_(2021).jpg', tags: [
+              { type: 'status', value: "Completed" },
+              { type: 'platform', value: "Windows" },
+            ], added: 1671835908, updated: 1673624379
+          },
+          {
+            name: 'Animal Crossing: New Horizons', image: 'https://howlongtobeat.com/games/68240_Animal_Crossing_New_Horizons.jpg', tags: [
+              { type: 'status', value: "Paused" },
+              { type: 'platform', value: "Nintendo Switch" },
+            ], added: 23345340, updated: 3452340
+          },
+          {
+            name: 'Elden Ring', image: 'https://howlongtobeat.com/games/68151_Elden_Ring.jpg', tags: [
+              { type: 'status', value: "Not Started" },
+              { type: 'platform', value: "PlayStation" },
+            ], added: 452540, updated: 353453250
+          },
+          {
+            name: 'Dragon Quest XI: Echoes of an Elusive Age: Definitive Edition', image: 'https://howlongtobeat.com/games/39508_Dragon_Quest_XI_In_Search_of_Departed_Time.jpg', tags: [
+              { type: 'status', value: "Completed" },
+              { type: 'platform', value: "Windows" },
+            ], added: 1626457604, updated: 1671835908
+          },
+          {
+            name: 'Cyberpunk 2077', image: 'https://howlongtobeat.com/games/Cyberpunk-2077-2.jpg', tags: [
+              { type: 'status', value: "Dropped" },
+              { type: 'platform', value: "Windows" },
+            ], added: 23542350, updated: 523542350
+          },
+          {
+            name: 'Rocket League', image: 'https://howlongtobeat.com/games/Rocket_League_header.jpg', tags: [
+              { type: 'status', value: "Paused" },
+              { type: 'platform', value: "Xbox" },
+            ], added: 3452345520, updated: 34523450
+          },
+        ]
+      }
+    ]
+  }
 
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(url)
@@ -69,6 +147,14 @@ async function createWindow() {
       }
     } satisfies Resize
     win.webContents.send('resize-win', JSON.stringify(obj))
+  })
+
+  ipcMain.handle('get-db', () => {
+    return db.data
+  })
+
+  ipcMain.handle('save-db', (_, arg) => {
+    db.data = arg as DatabaseData
   })
 
   ipcMain.handle('set-zoom', (_, arg) => win.webContents.setZoomFactor(arg / 100))

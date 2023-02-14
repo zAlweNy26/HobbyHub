@@ -18,28 +18,16 @@ Idea by @FedeDC512
 ## 🚀 Main used tools
 
 - TypeScript
-- Vue
-- Vue Router
-- TailwindCSS
+- Vue (+ Vue Router)
+- LowDB
+- TailwindCSS (+ DaisyUI)
 - Pinia
 - Electron
 
-## 📚 Tailwind CSS libraries used
-
-[Myna UI](https://mynaui.com)
-
-[Daisy UI](https://daisyui.com/components)
-
-[Meraki UI](https://merakiui.com/components)
-
-[Kitwind](https://kitwind.io/products/kometa/components)
-
-[Tailwind UI](https://tailwindui.com/components)
-
 ## To-do list
 
+- [ ] Create and choose a definitive logo and name for the app
 - [ ] Add UI translations in Italian, French, German and Spanish
 - [ ] Implement an auto-fill feature for every category
 - [ ] Make the search input work
-- [ ] Add feature to export and import (merge and override) the save file
-- [ ] Create and choose a definitive logo and name for the app
+- [ ] Add feature to export and import (merge or override) the save file

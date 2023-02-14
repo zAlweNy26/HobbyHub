@@ -33,9 +33,9 @@ const blurOnEnter = (event: KeyboardEvent) => {
 }
 
 const updateAlphabeticalOrder = () => {
-    if (sortings.value.alphabet == Order.Ascending) sortings.value.alphabet = Order.Descending
-    else if (sortings.value.alphabet == Order.Descending) sortings.value.alphabet = Order.None
-    else sortings.value.alphabet = Order.Ascending
+    if (sortings.value[currentSection.value].alphabet == Order.Ascending) sortings.value[currentSection.value].alphabet = Order.Descending
+    else if (sortings.value[currentSection.value].alphabet == Order.Descending) sortings.value[currentSection.value].alphabet = Order.None
+    else sortings.value[currentSection.value].alphabet = Order.Ascending
 }
 </script>
 
@@ -82,15 +82,15 @@ const updateAlphabeticalOrder = () => {
 						<div class="flex gap-2 p-2 shadow-xl rounded-xl bg-base-300">
 							<Tooltip content="Alphabetical">
 								<label class="swap btn-ghost btn-sm btn-square btn"
-									:class="{ '!btn-primary': sortings.alphabet != Order.None }"
+									:class="{ '!btn-primary': sortings[currentSection].alphabet != Order.None }"
 									aria-label="Alphabetical">
 									<input type="checkbox" class="modal-toggle"
-										:checked="sortings.alphabet != Order.None" @click="updateAlphabeticalOrder">
+										:checked="sortings[currentSection].alphabet != Order.None" @click="updateAlphabeticalOrder">
 									<Icon icon="fluent:text-sort-ascending-16-filled" class="w-6 h-6 swap-on" />
 									<Icon icon="fluent:text-sort-descending-16-filled" class="w-6 h-6 swap-off" />
 								</label>
 							</Tooltip>
-							<ListHandler v-for="cat in categories" :key="cat.name" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
+							<ListHandler v-for="cat in categories[currentSection]" :key="cat.name" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
 								handler="sortings" :category="cat.name.toLowerCase()" :values="cat.options" />
 						</div>
 					</PopoverPanel>
@@ -107,9 +107,9 @@ const updateAlphabeticalOrder = () => {
 				<Transition enter-active-class="transition ease-out" enter-from-class="transform scale-90 opacity-0"
 					enter-to-class="transform scale-100 opacity-100" leave-active-class="transition ease-in"
 					leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
-					<PopoverPanel class="absolute z-10 -translate-x-1/2 left-1/2 translate-y-3/4">
+					<PopoverPanel v-if="categories[currentSection].length > 0" class="absolute z-10 -translate-x-1/2 left-1/2 translate-y-3/4">
 						<div class="flex gap-2 p-2 shadow-xl rounded-xl bg-base-300">
-							<ListHandler v-for="cat in categories" :key="cat.name" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
+							<ListHandler v-for="cat in categories[currentSection]" :key="cat.name" :tooltip="`By ${cat.name}`" :icon="cat.icon" 
 								handler="filters" :category="cat.name.toLowerCase()" :values="cat.options" />
 						</div>
 					</PopoverPanel>
