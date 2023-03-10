@@ -30,13 +30,16 @@ const currentCardTag = (cat: ICategory) => {
 	return tag ?? ""
 }
 
-const tagColors = (cat: string, val: string) => {
+const bgColorTag = (cat: string, val: string) => {
 	const category = categories.value[currentSection.value].find(c => c.name.toLowerCase() == cat)
 	const option = category?.options.find(o => o.value == val)
-	return {
-		bg: option?.bg ?? "",
-		fg: option?.fg ?? ""
-	}
+	return option?.bg ?? ""
+}
+
+const fgColorTag = (cat: string, val: string) => {
+	const category = categories.value[currentSection.value].find(c => c.name.toLowerCase() == cat)
+	const option = category?.options.find(o => o.value == val)
+	return option?.fg ?? ""
 }
 
 const currentCardIcon = (cat: ICategory) => {
@@ -82,7 +85,6 @@ const updateCardTag = (value: string, type: string) => {
 	const tag = currentCard.value.tags.find(t => t.type == type)
 	if (tag != undefined) tag.value = value
 }
-//TODO: Trovare modo di far funzionare i colori importati dal db
 </script>
 
 <template>
@@ -133,10 +135,12 @@ const updateCardTag = (value: string, type: string) => {
 			</p>
 			<div class="flex items-center gap-2 mt-1">
 				<div v-for="tag in baseCard.tags.filter(t => t.value != 'None')" :key="tag.type"
-					:class="tagColors(tag.type, tag.value).bg"
+					:style="'background-color: ' + bgColorTag(tag.type, tag.value)"
+					:class="{ '!bg-neutral': bgColorTag(tag.type, tag.value) == 'opposite' }"
 					class="flex w-min items-center gap-1 rounded-full px-1.5 py-0.5">
 					<p class="text-xs font-bold whitespace-nowrap text-base-100"
-						:class="tagColors(tag.type, tag.value).fg">
+						:style="'color: ' + fgColorTag(tag.type, tag.value) + ' !important'"
+						:class="{ '!text-neutral': fgColorTag(tag.type, tag.value) == 'opposite' }">
 						{{ tag.value }}
 					</p>
 				</div>
@@ -154,9 +158,12 @@ const updateCardTag = (value: string, type: string) => {
 		</div>
 		<div class="flex items-center gap-2">
 			<div v-for="tag in baseCard.tags.filter(t => t.value != 'None')" :key="tag.type"
-				:class="tagColors(tag.type, tag.value).bg"
+				:style="'background-color: ' + bgColorTag(tag.type, tag.value)"
+				:class="{ '!bg-neutral': bgColorTag(tag.type, tag.value) == 'opposite' }"
 				class="flex w-min items-center gap-1 rounded-full px-1.5 py-0.5">
-				<p class="text-xs font-bold whitespace-nowrap text-base-100" :class="tagColors(tag.type, tag.value).fg">
+				<p class="text-xs font-bold whitespace-nowrap text-base-100" 
+					:style="'color: ' + fgColorTag(tag.type, tag.value) + ' !important'"
+					:class="{ '!text-neutral': fgColorTag(tag.type, tag.value) == 'opposite' }">
 					{{ tag.value }}
 				</p>
 			</div>

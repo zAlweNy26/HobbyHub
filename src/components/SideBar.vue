@@ -72,7 +72,7 @@ defineExpose({
 											Add
 										</p>
 									</button>
-									<div class="flex flex-col gap-2 my-4 overflow-y-auto snap-y" style="direction: rtl;">
+									<div class="flex flex-col gap-2 my-4 overflow-x-hidden overflow-y-auto snap-y" style="direction: rtl;">
 										<button v-for="(section, index) in sectionsList" :key="section" :aria-label="section" style="direction: ltr;"
 											class="justify-start gap-2 px-1 overflow-y-auto btn-ghost snap-start btn-sm btn flex-nowrap" @click="changeSection(index)">
 											<Icon class="w-6 h-6 shrink-0" icon="fluent:archive-24-filled" />

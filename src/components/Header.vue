@@ -24,7 +24,8 @@ const updateZoom = (perc: number) => {
 
 const updateName = (event: FocusEvent) => {
     const target = event.target as HTMLElement
-    page.updateSection(currentSection.value, target.innerText.trim())
+	target.innerText = target.innerText.trim() || "Template"
+    page.updateSection(currentSection.value, target.innerText)
 }
 
 const blurOnEnter = (event: KeyboardEvent) => {
