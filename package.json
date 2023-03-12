@@ -8,9 +8,9 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zAlweNy26/hobbies_tracker.git"
+    "url": "git+https://github.com/zAlweNy26/HobbyHub.git"
   },
-  "homepage": "https://github.com/zAlweNy26/hobbies_tracker#readme",
+  "homepage": "https://github.com/zAlweNy26/HobbyHub#readme",
   "keywords": [
     "electron",
     "vite",

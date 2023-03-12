@@ -4,7 +4,7 @@
 📚 Add Games, Books, TV Series, Movies, Anime, Comics, Mangas and more!
 📝 Keep track of your progress and note down things that inspire you and that you would like to try!
 
-Idea by @FedeDC512
+Idea by [@FedeDC512](https://github.com/FedeDC512)
 
 ## ✨ Features
 
