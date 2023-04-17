@@ -27,12 +27,22 @@ export const usePageStore = defineStore('page', () => {
         sectionsList.value[index] = name
     }
 
-    const addSection = (name: string) => {
-        categories.value.push([])
-        cards.value.push([])
+    const addSection = (name: string, cardsArr: ICard[] = [], categoriesArr: ICategory[] = []) => {
+        categories.value.push(categoriesArr)
+        cards.value.push(cardsArr)
         filters.value.push({})
         sortings.value.push({ alphabet: Order.None })
         return sectionsList.value.push(name) - 1
+    }
+
+    const deleteSection = (index: number) => {
+        sectionsList.value.splice(index, 1)
+        categories.value.splice(index, 1)
+        cards.value.splice(index, 1)
+        filters.value.splice(index, 1)
+        sortings.value.splice(index, 1)
+        if (sectionsList.value.length === 0) addSection('Template')
+        else if (currentSection.value === index) currentSection.value = index == 0 ? 0 : sectionsList.value.length - 1
     }
 
     const saveCard = (index: number, card: ICard) => {
@@ -58,7 +68,8 @@ export const usePageStore = defineStore('page', () => {
         cards,
         saveCard,
         deleteCard,
-        addSection
+        addSection,
+        deleteSection
     }
 })
 

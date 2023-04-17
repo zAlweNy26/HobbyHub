@@ -4,6 +4,7 @@ import { Icon } from '@iconify/vue'
 import Tooltip from '@components/Tooltip.vue'
 import ListHandler from '@components/ListHandler.vue'
 import { usePageStore } from '@stores/pageStore'
+import { useSettingsStore } from '@stores/settingsStore'
 import { ViewMode, Order } from '@/interfaces'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -11,11 +12,10 @@ import SideBar from '@components/SideBar.vue'
 
 const page = usePageStore()
 const { currentSection, viewMode, sortings, sectionsList, categories } = storeToRefs(page)
-
-const zoom = ref(100)
+const { zoom } = storeToRefs(useSettingsStore())
 const sideBarComp = ref<InstanceType<typeof SideBar>>()
 
-window.electron.getProperties().then(p => zoom.value = p.zoom * 100)
+window.electron.onZoomChange((e, zoomFactor) => zoom.value = zoomFactor * 100)
 
 const updateZoom = (perc: number) => {
     zoom.value = Math.max(10, Math.min(200, zoom.value += perc))

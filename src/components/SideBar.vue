@@ -54,14 +54,15 @@ defineExpose({
 											<Icon icon="fluent:settings-24-filled" class="w-6 h-6" />
 										</button>
 										<ThemeButton />
-										<!--<Tooltip content="Close Menu"> Problem with Transition components -->
+										<!--TODO: <Tooltip content="Close Menu"> Problem with Transition components -->
 										<button class="btn-ghost btn-square btn-sm btn" aria-label="Close Menu" @click="isOpen = false">
 											<Icon icon="fluent:dismiss-24-filled" class="w-6 h-6" />
 										</button>
 										<!--</Tooltip>-->
 									</div>
 									<div class="h-10 my-4 input-group-bordered">
-										<input v-model="searchItem" type="text" class="input !input-sm w-full" placeholder="Enter an item..." @keyup.enter="searchForItem">
+										<input v-model="searchItem" type="text" class="input !input-sm w-full" 
+											:placeholder="$t('sidebar.search')" @keyup.enter="searchForItem">
 										<button class="btn-primary btn-square btn-sm btn" aria-label="Search an item" @click="searchForItem">
 											<Icon class="w-6 h-6" icon="fluent:search-24-filled" />
 										</button>
@@ -69,7 +70,7 @@ defineExpose({
 									<button aria-label="Add section" class="gap-2 px-1 btn-primary btn-sm btn" @click="changeSection(page.addSection('Template'))">
 										<Icon class="w-6 h-6 shrink-0" icon="fluent:add-24-filled" />
 										<p class="font-extrabold">
-											Add
+											{{ $t("sidebar.add") }}
 										</p>
 									</button>
 									<div class="flex flex-col gap-2 my-4 overflow-x-hidden overflow-y-auto snap-y" style="direction: rtl;">
@@ -79,6 +80,9 @@ defineExpose({
 											<p class="normal-case truncate">
 												{{ section }}
 											</p>
+											<button class="ml-auto btn-error btn-xs btn-square btn" @click.stop="page.deleteSection(index)">
+												<Icon class="w-4 h-4 shrink-0" icon="eva:trash-2-fill" />
+											</button>
 										</button>
 									</div>
 								</div>

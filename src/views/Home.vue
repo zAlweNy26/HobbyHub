@@ -44,6 +44,13 @@ const computedCards = computed(() => {
     return sortedCards as (ICard & { index: number })[]
 })
 
+const templateCardRef = ref<InstanceType<typeof Card>>()
+const cardsRefs = ref<InstanceType<typeof Card>[]>([])
+
+window.electron.addCard(() => {
+    if (cardsRefs.value.every(c => !c.modalCard?.isOpen)) templateCardRef.value?.openCard()
+})
+
 const templateCard = ref<ICard>()
 
 watch(currentSection, () => {
@@ -54,9 +61,7 @@ watch(currentSection, () => {
         added: 0, 
         updated: 0
     }
-}, {
-    immediate: true
-})
+}, { immediate: true })
 </script>
 
 <template>
@@ -64,8 +69,10 @@ watch(currentSection, () => {
 		'gap-2 p-2 justify-start': viewMode != ViewMode.Grid,
 		'justify-around gap-4 p-4': viewMode == ViewMode.Grid
 	}">
-		<Card :content="templateCard!" :mode="viewMode" :index="-1" @save="page.saveCard" />
-		<Card v-for="(card, index) in computedCards" :key="`${card.name}_${index}`" :content="card" :index="card.index" 
+		<Card ref="templateCardRef" :content="templateCard!" :mode="viewMode" :index="-1" 
+			@save="page.saveCard" />
+		<Card v-for="(card, index) in computedCards" ref="cardsRefs" 
+			:key="`${card.name}_${index}`" :content="card" :index="card.index" 
 			:mode="viewMode" @delete="page.deleteCard" @save="page.saveCard" />
 	</div>
 </template>

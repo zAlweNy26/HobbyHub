@@ -1,9 +1,12 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron'
 import { release } from 'os'
+import { writeFile, readFileSync } from 'fs'
 import { join } from 'path'
+import localShortcut from 'electron-localshortcut'
 import { JSONFile } from '@commonify/lowdb/lib/adapters/JSONFile'
 import { Low } from '@commonify/lowdb'
 import type { Properties, Resize, DatabaseData } from '../../src/preload'
+import { parseDb, isValid, reportDb } from '../../src/preload'
 
 process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
@@ -54,69 +57,9 @@ async function createWindow() {
     current: 0,
     sections: [
       {
-        name: "Games",
-        categories: [
-          {
-            name: "Status",
-            icon: "ph:spinner-bold",
-            options: [
-              { value: 'None', icon: 'fluent:border-none-24-filled' },
-              { value: 'Not Started', icon: 'fluent:record-stop-12-filled', bg: 'opposite' },
-              { value: 'Dropped', icon: 'fluent:drop-12-filled', bg: '#EF4444' },
-              { value: 'Paused', icon: 'fluent:pause-12-filled', bg: '#EAB308' },
-              { value: 'Completed', icon: 'fluent:checkmark-circle-12-filled', bg: '#22C55E' }
-            ]
-          },
-          {
-            name: "Platform",
-            icon: "fluent:laptop-16-regular",
-            options: [
-              { value: 'None', icon: 'fluent:border-none-24-filled' },
-              { value: 'Windows', icon: 'ri:windows-fill', bg: '#00A4EF' },
-              { value: 'Nintendo Switch', icon: 'ri:switch-fill', bg: '#DD2020' },
-              { value: 'Xbox', icon: 'ri:xbox-fill', bg: '#107C10' },
-              { value: 'PlayStation', icon: 'ri:playstation-fill', bg: '#006FCD' }
-            ]
-          }
-        ],
-        cards: [
-          {
-            name: 'Unpacking', image: 'https://howlongtobeat.com/games/69666_Unpacking_(2021).jpg', tags: [
-              { type: 'status', value: "Completed" },
-              { type: 'platform', value: "Windows" },
-            ], added: 1671835908, updated: 1673624379
-          },
-          {
-            name: 'Animal Crossing: New Horizons', image: 'https://howlongtobeat.com/games/68240_Animal_Crossing_New_Horizons.jpg', tags: [
-              { type: 'status', value: "Paused" },
-              { type: 'platform', value: "Nintendo Switch" },
-            ], added: 23345340, updated: 3452340
-          },
-          {
-            name: 'Elden Ring', image: 'https://howlongtobeat.com/games/68151_Elden_Ring.jpg', tags: [
-              { type: 'status', value: "Not Started" },
-              { type: 'platform', value: "PlayStation" },
-            ], added: 452540, updated: 353453250
-          },
-          {
-            name: 'Dragon Quest XI: Echoes of an Elusive Age: Definitive Edition', image: 'https://howlongtobeat.com/games/39508_Dragon_Quest_XI_In_Search_of_Departed_Time.jpg', tags: [
-              { type: 'status', value: "Completed" },
-              { type: 'platform', value: "Windows" },
-            ], added: 1626457604, updated: 1671835908
-          },
-          {
-            name: 'Cyberpunk 2077', image: 'https://howlongtobeat.com/games/Cyberpunk-2077-2.jpg', tags: [
-              { type: 'status', value: "Dropped" },
-              { type: 'platform', value: "Windows" },
-            ], added: 23542350, updated: 523542350
-          },
-          {
-            name: 'Rocket League', image: 'https://howlongtobeat.com/games/Rocket_League_header.jpg', tags: [
-              { type: 'status', value: "Paused" },
-              { type: 'platform', value: "Xbox" },
-            ], added: 3452345520, updated: 34523450
-          },
-        ]
+        name: "Template",
+        categories: [],
+        cards: []
       }
     ]
   }
@@ -129,7 +72,28 @@ async function createWindow() {
   }
 
   win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('page-message', "Finished loading!")
+    win.webContents.send('page-message', "Finished loading!")
+    win.webContents.send('zoom-change', win.webContents.zoomFactor)
+  })
+
+  localShortcut.register(win, 'CommandOrControl+A', () => {
+    win.webContents.send('add-card')
+  })
+
+  localShortcut.register(win, 'CommandOrControl+S', () => {
+    win.webContents.send('save-card')
+  })
+
+  localShortcut.register(win, 'CommandOrControl+P', () => {
+    const zoom = Math.max(0.1, Math.min(2, win.webContents.zoomFactor + 0.1))
+    win.webContents.setZoomFactor(zoom)
+    win.webContents.send('zoom-change', zoom)
+  })
+
+  localShortcut.register(win, 'CommandOrControl+M', () => {
+    const zoom = Math.max(0.1, Math.min(2, win.webContents.zoomFactor - 0.1))
+    win.webContents.setZoomFactor(zoom)
+    win.webContents.send('zoom-change', zoom)
   })
 
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -155,6 +119,36 @@ async function createWindow() {
 
   ipcMain.handle('save-db', (_, arg) => {
     db.data = arg as DatabaseData
+  })
+
+  ipcMain.handle('import-db', async () => {
+    const { filePaths, canceled } = await dialog.showOpenDialog({
+      defaultPath: process.env.HOME,
+      filters: [
+        { name: "Database file", extensions: ["json"] }
+      ]
+    })
+    if (filePaths && !canceled) {
+      const data = readFileSync(filePaths[0], 'utf-8')
+      const decoded = parseDb(JSON.parse(data))
+      if (isValid(decoded)) return decoded.right
+      else console.error(reportDb(decoded).join("\n"))
+    }
+    return undefined
+  })
+
+  ipcMain.handle('export-db', async (_, arg) => {
+    const { filePath, canceled } = await dialog.showSaveDialog({
+      defaultPath: join(process.env.HOME, 'HobbyHub_Database.json'),
+      filters: [
+        { name: "Database file", extensions: ["json"] }
+      ]
+    })
+    if (filePath && !canceled) {
+      writeFile(filePath, arg, 'utf-8', (err) => {
+        if (err) throw err
+      })
+    }
   })
 
   ipcMain.handle('set-zoom', (_, arg) => win.webContents.setZoomFactor(arg / 100))

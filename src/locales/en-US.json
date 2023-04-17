@@ -1,0 +1,18 @@
+{
+    "theme": {
+        "dark": "Dark",
+        "light": "Light"
+    },
+    "settings": {
+        "title": "Settings",
+        "language": "Language",
+        "data": "Data",
+        "import": "Import",
+        "export": "Export",
+        "apply": "Apply"
+    },
+    "sidebar": {
+        "search": "Search an item...",
+        "add": "Add"
+    }
+}

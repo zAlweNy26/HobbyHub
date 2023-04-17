@@ -30,14 +30,17 @@
   "scripts": {
     "dev": "vite",
     "check": "vue-tsc --noEmit",
+    "preinstall": "npx only-allow pnpm",
     "preview": "vite preview",
-    "build": "npm run check && vite build",
-    "mac": "npm run build && electron-builder --mac",
-    "windows": "npm run build && electron-builder --win",
-    "portable": "npm run build && electron-builder --win portable",
+    "build": "pnpm run check && vite build",
+    "mac": "pnpm run build && electron-builder --mac",
+    "windows": "pnpm run build && electron-builder --win",
+    "portable": "pnpm run build && electron-builder --win portable",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^0.10.0",
+    "@types/electron-localshortcut": "^3.1.0",
     "@types/igdb-api-node": "^5.0.0",
     "@types/node": "^18.14.6",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
@@ -71,16 +74,20 @@
     "animate.css": "^4.1.1",
     "apicalypse": "^0.2.0",
     "daisyui": "^2.51.3",
+    "electron-localshortcut": "^3.2.1",
     "eslint-plugin-tailwindcss": "^3.10.1",
+    "fp-ts": "^2.13.1",
     "howlongtobeat": "^1.7.0",
     "igdb-api-node": "^5.0.2",
     "imdb-api": "^4.4.1",
+    "io-ts": "^2.2.20",
     "json-schema-to-typescript": "^12.0.0",
     "lodash": "^4.17.21",
     "pinia": "^2.0.33",
     "tailwind-children": "^0.5.0",
     "tailwindcss-gradients": "^3.0.0",
     "vite-tsconfig-paths": "^4.0.5",
+    "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6"
   }
 }

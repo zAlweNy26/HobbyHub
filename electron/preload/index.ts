@@ -11,11 +11,18 @@ const exposedApi: ContextBridgeApi = {
   getProperties: () => ipcRenderer.invoke('win-properties'),
   getDB: () => ipcRenderer.invoke('get-db'),
   saveDB: (db: DatabaseData) => ipcRenderer.invoke('save-db', db),
+  importDB: () => ipcRenderer.invoke('import-db'),
+  exportDB: (json: string) => ipcRenderer.invoke('export-db', json),
   onMessage: (callback: (event: IpcRendererEvent, res: string) => void) => {
     ipcRenderer.on('page-message', (e, args) => callback(e, args))
   },
   onResize: (callback: (event: IpcRendererEvent, res: Resize) => void) => {
     ipcRenderer.on('resize-win', (e, args) => callback(e, JSON.parse(args)))
+  },
+  saveCard: (callback: () => void) => ipcRenderer.on('save-card', () => callback()),
+  addCard: (callback: () => void) => ipcRenderer.on('add-card', () => callback()),
+  onZoomChange: (callback: (event: IpcRendererEvent, zoom: number) => void) => {
+    ipcRenderer.on('zoom-change', (e, args) => callback(e, args))
   }
 }
 

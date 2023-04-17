@@ -3,8 +3,11 @@ import { defineConfig } from "vite"
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
-import pkg from './package.json'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'url'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import pkg from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -18,6 +21,9 @@ export default defineConfig(({ command }) => {
     plugins: [
       vue(),
       tsconfigPaths(),
+      VueI18nPlugin({
+        include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
+      }),
       electron([
         {
           entry: 'electron/main/index.ts',

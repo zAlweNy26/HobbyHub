@@ -30,6 +30,6 @@ onMounted(() => {
 		<input type="checkbox" class="modal-toggle" :checked="isDark" @click="toggleTheme">
 		<Icon icon="eva:moon-fill" class="w-6 h-6 swap-off" />
 		<Icon icon="eva:sun-fill" class="w-6 h-6 swap-on" />
-		<p class="ml-8 text-sm capitalize">{{ isDark ? "Light" : "Dark" }}</p>
+		<p class="ml-8 text-sm capitalize">{{ isDark ? $t('theme.light') : $t('theme.dark') }}</p>
 	</label>
 </template>

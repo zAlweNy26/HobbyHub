@@ -1,0 +1,18 @@
+{
+    "theme": {
+        "dark": "Scuro",
+        "light": "Chiaro"
+    },
+    "settings": {
+        "title": "Impostazioni",
+        "language": "Lingua",
+        "data": "Dati",
+        "import": "Importa",
+        "export": "Esporta",
+        "apply": "Applica"
+    },
+    "sidebar": {
+        "search": "Cerca un elemento...",
+        "add": "Aggiungi"
+    }
+}

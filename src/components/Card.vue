@@ -67,6 +67,10 @@ const updateCardName = (event: FocusEvent) => {
 	currentCard.value.name = target.innerText.trim()
 }
 
+window.electron.saveCard(() => {
+	if (modalCard.value?.isOpen) saveCard()
+})
+
 const openCard = () => {
 	currentCard.value = _.cloneDeep(baseCard.value)
 	modalCard.value?.openModal()
@@ -85,6 +89,10 @@ const updateCardTag = (value: string, type: string) => {
 	const tag = currentCard.value.tags.find(t => t.type == type)
 	if (tag != undefined) tag.value = value
 }
+
+defineExpose({
+	openCard, deleteCard, saveCard, modalCard
+})
 </script>
 
 <template>
@@ -156,7 +164,7 @@ const updateCardTag = (value: string, type: string) => {
 				{{ baseCard.name }}
 			</p>
 		</div>
-		<div class="flex items-center gap-2">
+		<div v-if="baseCard.tags.length" class="flex items-center gap-2">
 			<div v-for="tag in baseCard.tags.filter(t => t.value != 'None')" :key="tag.type"
 				:style="'background-color: ' + bgColorTag(tag.type, tag.value)"
 				:class="{ '!bg-neutral': bgColorTag(tag.type, tag.value) == 'opposite' }"
