@@ -51,6 +51,8 @@ window.electron.addCard(() => {
     if (cardsRefs.value.every(c => !c.modalCard?.isOpen)) templateCardRef.value?.openCard()
 })
 
+window.onbeforeunload = () => window.electron.saveDB(page.getJsonDB()) //TODO: controllare se funziona
+
 const templateCard = ref<ICard>()
 
 watch(currentSection, () => {

@@ -11,6 +11,10 @@ import type { Router } from 'vue-router'
 import { Order } from '@/interfaces'
 import enUS from "./locales/en-US.json"
 import itIT from "./locales/it-IT.json"
+import dayjs from 'dayjs'
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+
+dayjs.extend(LocalizedFormat)
 
 type MessageSchema = typeof enUS
 

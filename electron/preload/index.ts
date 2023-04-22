@@ -1,6 +1,6 @@
 import type { IpcRendererEvent } from "electron"
 import { contextBridge, ipcRenderer } from "electron"
-import type { ContextBridgeApi, DatabaseData, Resize } from '../../src/preload'
+import type { ContextBridgeApi, Resize } from '../../src/preload'
 
 const exposedApi: ContextBridgeApi = {
   setZoom: (perc: number) => ipcRenderer.invoke('set-zoom', perc),
@@ -10,9 +10,9 @@ const exposedApi: ContextBridgeApi = {
   close: () => ipcRenderer.invoke('close-win'),
   getProperties: () => ipcRenderer.invoke('win-properties'),
   getDB: () => ipcRenderer.invoke('get-db'),
-  saveDB: (db: DatabaseData) => ipcRenderer.invoke('save-db', db),
+  saveDB: (json: string) => ipcRenderer.invoke('save-db', json),
   importDB: () => ipcRenderer.invoke('import-db'),
-  exportDB: (json: string) => ipcRenderer.invoke('export-db', json),
+  exportDB: () => ipcRenderer.invoke('export-db'),
   onMessage: (callback: (event: IpcRendererEvent, res: string) => void) => {
     ipcRenderer.on('page-message', (e, args) => callback(e, args))
   },

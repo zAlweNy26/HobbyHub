@@ -5,6 +5,7 @@ import { join } from 'path'
 import localShortcut from 'electron-localshortcut'
 import { JSONFile } from '@commonify/lowdb/lib/adapters/JSONFile'
 import { Low } from '@commonify/lowdb'
+import sharp from 'sharp'
 import type { Properties, Resize, DatabaseData } from '../../src/preload'
 import { parseDb, isValid, reportDb } from '../../src/preload'
 
@@ -117,8 +118,9 @@ async function createWindow() {
     return db.data
   })
 
-  ipcMain.handle('save-db', (_, arg) => {
-    db.data = arg as DatabaseData
+  ipcMain.handle('save-db', (_, arg: string) => {
+    const decoded = parseDb(JSON.parse(arg))
+    if (isValid(decoded)) db.data = decoded.right
   })
 
   ipcMain.handle('import-db', async () => {
@@ -137,7 +139,7 @@ async function createWindow() {
     return undefined
   })
 
-  ipcMain.handle('export-db', async (_, arg) => {
+  ipcMain.handle('export-db', async () => {
     const { filePath, canceled } = await dialog.showSaveDialog({
       defaultPath: join(process.env.HOME, 'HobbyHub_Database.json'),
       filters: [
@@ -145,7 +147,16 @@ async function createWindow() {
       ]
     })
     if (filePath && !canceled) {
-      writeFile(filePath, arg, 'utf-8', (err) => {
+      db.data.sections.forEach(s => {
+        s.cards.map(async c => {
+          if (c.image) {
+            const resizedBuffer = await sharp(c.image).resize(160, 240).toBuffer()
+            c.image = resizedBuffer.toString('base64')
+            console.log(c.image)
+          }
+        })
+      })
+      writeFile(filePath, JSON.stringify(db.data, undefined, 2), 'utf-8', (err) => {
         if (err) throw err
       })
     }

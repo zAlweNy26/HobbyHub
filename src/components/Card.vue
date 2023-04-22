@@ -9,6 +9,7 @@ import { ViewMode } from '@/interfaces'
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption, ListboxLabel } from '@headlessui/vue'
 import { usePageStore } from '@stores/pageStore'
 import { storeToRefs } from 'pinia'
+import dayjs from 'dayjs'
 
 const emit = defineEmits(['delete', 'save'])
 
@@ -90,6 +91,19 @@ const updateCardTag = (value: string, type: string) => {
 	if (tag != undefined) tag.value = value
 }
 
+const uploadImage = (e: Event) => {
+    const inputElement = e.target as HTMLInputElement
+    if (inputElement.files) {
+		const fileReader = new FileReader()
+		fileReader.addEventListener("load", async (event) => {
+			if (event.target?.result) {
+				currentCard.value.image = event.target.result as string
+			}
+		})
+		fileReader.readAsDataURL(inputElement.files[0]);
+	}
+}
+
 defineExpose({
 	openCard, deleteCard, saveCard, modalCard
 })
@@ -139,7 +153,7 @@ defineExpose({
 				{{ baseCard.name }}
 			</p>
 			<p class="text-xs font-semibold text-neutral">
-				Added on {{ new Date(currentCard.added * 1000).toLocaleDateString() }}
+				Added on {{ dayjs(currentCard.added * 1000).format("L") }}
 			</p>
 			<div class="flex items-center gap-2 mt-1">
 				<div v-for="tag in baseCard.tags.filter(t => t.value != 'None')" :key="tag.type"
@@ -181,7 +195,7 @@ defineExpose({
 		<div class="flex justify-between gap-2">
 			<div class="flex gap-2">
 				<div class="relative shrink-0">
-					<img v-if="index > -1" class="h-[7.5rem] w-20 select-none rounded-lg object-cover object-center"
+					<img v-if="currentCard.image" class="h-[7.5rem] w-20 select-none rounded-lg object-cover object-center"
 						draggable="false" :src="currentCard.image">
 					<div v-else
 						class="flex h-[7.5rem] w-20 items-center justify-center rounded-lg bg-base-100 text-neutral transition-colors hover:bg-base-300" />
@@ -191,7 +205,7 @@ defineExpose({
 							<div class="flex flex-col items-center justify-center">
 								<Icon icon="fluent:camera-24-filled" class="w-8 h-8" />
 							</div>
-							<input id="imageInputBox" type="file" class="sr-only" accept=".png, .jpeg, .jpg, .svg">
+							<input id="imageInputBox" type="file" class="sr-only" accept=".png, .jpeg, .jpg, .svg" @change="uploadImage">
 						</label>
 					</div>
 				</div>
@@ -202,11 +216,11 @@ defineExpose({
 					</h3>
 					<p v-if="currentCard.added > 0" class="text-xs">
 						Added on
-						<span class="font-bold">{{ new Date(currentCard.added * 1000).toLocaleDateString() }}</span>
+						<span class="font-bold">{{ dayjs(currentCard.added * 1000).format("L") }}</span>
 					</p>
 					<p v-if="currentCard.updated > 0" class="text-xs">
 						Last change on
-						<span class="font-bold">{{ new Date(currentCard.updated * 1000).toLocaleDateString() }}</span>
+						<span class="font-bold">{{ dayjs(currentCard.updated * 1000).format("L") }}</span>
 					</p>
 				</div>
 			</div>

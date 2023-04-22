@@ -6,14 +6,22 @@ import { useSettingsStore } from '@stores/settingsStore'
 import { usePageStore } from '@stores/pageStore'
 import Modal from '@components/Modal.vue'
 import { storeToRefs } from 'pinia'
-import type { ICategory, ICard } from '@/interfaces'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import dayjs from 'dayjs'
+
+const locales = {
+	de: () => import('dayjs/locale/de'),
+	en: () => import('dayjs/locale/en'),
+	it: () => import('dayjs/locale/it'),
+	es: () => import('dayjs/locale/es'),
+	fr: () => import('dayjs/locale/fr'),
+}
 
 const i18n = useI18n({ useScope: 'global' })
 
 const page = usePageStore()
-const { currentSection, sectionsList, cards, categories } = storeToRefs(page)
+const { currentSection } = storeToRefs(page)
 const settings = useSettingsStore()
 const settingsState = ref(_.cloneDeep(settings.$state))
 const modalSettings = ref<InstanceType<typeof Modal>>()
@@ -33,6 +41,8 @@ const openSettings = () => {
 const applyChanges = () => {
 	settings.$state = settingsState.value
 	i18n.locale.value = settingsState.value.currentLanguage
+	const dateLocale = settingsState.value.currentLanguage.split("-")[0] as keyof typeof locales
+	locales[dateLocale]().then(() => dayjs.locale(dateLocale))
 	enableApply.value = false
 }
 
@@ -41,29 +51,13 @@ const importDb = async () => {
 	if (file) {
 		currentSection.value = file.current
 		file.sections.forEach(s => page.addSection(s.name, s.cards, s.categories))
+		window.electron.saveDB(page.getJsonDB())
+		modalSettings.value?.closeModal()
 	}
 }
 
 const exportDb = () => {
-	const exportedJson: {
-		current: number,
-		sections: {
-			name: string,
-			categories: ICategory[],
-			cards: ICard[]
-		}[]
-	} = {
-		current: currentSection.value,
-		sections: []
-	}
-	sectionsList.value.forEach((s, i) => {
-		exportedJson.sections.push({
-			name: s,
-			categories: categories.value[i],
-			cards: cards.value[i]
-		})
-	})
-	window.electron.exportDB(JSON.stringify(exportedJson, undefined, 2))
+	window.electron.saveDB(page.getJsonDB()).then(() => window.electron.exportDB())
 }
 
 defineExpose({

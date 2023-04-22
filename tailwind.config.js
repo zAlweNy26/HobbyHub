@@ -17,13 +17,7 @@ module.exports = {
 			'amber-orange': ['#F59E0B', '#F97316'],
 			'orange-amber': ['#F97316', '#F59E0B'],
 			'purple-ube': ['#5B06D6', '#8400D1'],
-			'ube-purple': ['#8400D1', '#5B06D6'],
-			'gold-dark': ['#C1860D', '#A87112'],
-			'gold-light': ['#DA9B07', '#C1860D'],
-			'silver-dark': ['#828282', '#575757'],
-			'silver-light': ['#AFAEAD', '#828282'],
-			'bronze-dark': ['#CD7F32', '#A46628'],
-			'bronze-light': ['#D7995B', '#CD7F32'],
+			'ube-purple': ['#8400D1', '#5B06D6']
 		},
 		repeatingLinearGradientColors: theme => theme('linearGradientColors'),
 		extend: {
@@ -42,31 +36,13 @@ module.exports = {
 			rotate: {
 				'135': '135deg',
 			},
-			aspectRatio: {
-				'4/3': '4 / 3',
-				'phone': '9 / 16',
-			},
 			borderRadius: {
 				'4xl': '2rem',
 			},
-			translate: {
-				'15p': '15%',
-				'1/5': '20%',
-				'1/10': '10%',
-			},
-			width: {
-				'65p': '65%',
-				'90p': '90%',
-			},
-			height: {
-				'65p': '65%',
-				'90p': '90%',
-			}
 		},
 	},
 	plugins: [
 		require('@tailwindcss/forms'),
-		require('@tailwindcss/typography'),
 		require('tailwindcss-gradients'),
 		require('tailwind-children'),
 		require('@headlessui/tailwindcss'),

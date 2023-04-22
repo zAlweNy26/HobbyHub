@@ -56,6 +56,28 @@ export const usePageStore = defineStore('page', () => {
         if (index >= 0) cards.value[currentSection.value].splice(index, 1)
     }
 
+    const getJsonDB = () => {
+        const exportedJson: {
+            current: number,
+            sections: {
+                name: string,
+                categories: ICategory[],
+                cards: ICard[]
+            }[]
+        } = {
+            current: currentSection.value,
+            sections: []
+        }
+        sectionsList.value.forEach((s, i) => {
+            exportedJson.sections.push({
+                name: s,
+                categories: categories.value[i],
+                cards: cards.value[i]
+            })
+        })
+        return JSON.stringify(exportedJson, undefined, 2)
+    }
+
     return {
         filters,
         sortings,
@@ -69,7 +91,8 @@ export const usePageStore = defineStore('page', () => {
         saveCard,
         deleteCard,
         addSection,
-        deleteSection
+        deleteSection,
+        getJsonDB
     }
 })
 
