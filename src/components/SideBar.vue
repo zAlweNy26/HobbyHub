@@ -20,7 +20,7 @@ const openSettings = () => {
 }
 
 const searchForItem = () => {
-	console.log("search")
+	alert("search")
 }
 
 const changeSection = (section: number) => {

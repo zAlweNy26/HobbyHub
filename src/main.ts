@@ -1,45 +1,32 @@
-import type { Raw } from 'vue'
-import { createApp, markRaw } from 'vue'
+import { createApp } from 'vue'
 import "./assets/main.css"
 import 'animate.css'
 import App from './App.vue'
-import router from './router'
 import { createPinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import { usePageStore } from '@stores/pageStore'
-import type { Router } from 'vue-router'
 import { Order } from '@/interfaces'
 import enUS from "./locales/en-US.json"
 import itIT from "./locales/it-IT.json"
-import dayjs from 'dayjs'
-import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+import esES from "./locales/es-ES.json"
+import deDE from "./locales/de-DE.json"
+import frFR from "./locales/fr-FR.json"
 
-dayjs.extend(LocalizedFormat)
-
-type MessageSchema = typeof enUS
-
-declare module 'pinia' {
-    export interface PiniaCustomProperties {
-        router: Raw<Router>
-    }
-}
-
-const i18n = createI18n<[MessageSchema], 'en-US' | 'it-IT'>({
+const i18n = createI18n({
     legacy: false,
     globalInjection: true,
-    locale: 'en-US',
-    fallbackLocale: 'en-US',
+    locale: 'English',
+    fallbackLocale: 'English',
     messages: {
-        'en-US': enUS,
-        'it-IT': itIT
+        'English': enUS,
+        'Italiano': itIT,
+        'Español': esES,
+        'Deutsch': deDE,
+        'Français': frFR,
     }
 })
 
 const pinia = createPinia()
-
-pinia.use(({ store }) => {
-    store.router = markRaw(router)
-})
 
 const pageStore = usePageStore(pinia)
 
@@ -59,5 +46,5 @@ window.electron.getDB().then(db => {
         })
     }
     
-    createApp(App).use(i18n).use(router).use(pinia).mount('#app')
+    createApp(App).use(i18n).use(pinia).mount('#app')
 })

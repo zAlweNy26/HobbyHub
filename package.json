@@ -72,15 +72,11 @@
     "@tailwindcss/forms": "^0.5.3",
     "@vue/eslint-config-typescript": "^11.0.2",
     "animate.css": "^4.1.1",
-    "apicalypse": "^0.2.0",
     "daisyui": "^2.51.5",
-    "dayjs": "^1.11.7",
     "electron-localshortcut": "^3.2.1",
     "eslint-plugin-tailwindcss": "^3.11.0",
     "fp-ts": "^2.14.0",
     "howlongtobeat": "^1.7.0",
-    "igdb-api-node": "^5.0.2",
-    "imdb-api": "^4.4.1",
     "io-ts": "^2.2.20",
     "json-schema-to-typescript": "^12.0.0",
     "lodash": "^4.17.21",
@@ -89,7 +85,6 @@
     "tailwind-children": "^0.5.0",
     "tailwindcss-gradients": "^3.0.0",
     "vite-tsconfig-paths": "^4.2.0",
-    "vue-i18n": "^9.2.2",
-    "vue-router": "^4.1.6"
+    "vue-i18n": "^9.2.2"
   }
 }

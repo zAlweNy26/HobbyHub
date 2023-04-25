@@ -14,5 +14,33 @@
     "sidebar": {
         "search": "Search an item...",
         "add": "Add"
+    },
+    "card": {
+        "name": "Name",
+        "save": "Save",
+        "delete": "Delete"
+    },
+    "toolbar": {
+        "unmaximize": "Unmaximize window",
+        "minimize": "Minimize window",
+        "maximize": "Maximize window",
+        "close": "Close window"
+    },
+    "header": {
+        "menu": "Menu",
+        "zoom": {
+            "in": "Zoom in",
+            "out": "Zoom out"
+        },
+        "sortings": {
+            "title": "Sortings",
+            "alphabetical": "Alphabetical"
+        },
+        "filters": "Filters",
+        "view": {
+            "detail": "Detailed View",
+            "grid": "Grid View",
+            "compact": "Compact View"
+        }
     }
 }

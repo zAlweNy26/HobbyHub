@@ -8,15 +8,6 @@ import Modal from '@components/Modal.vue'
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import dayjs from 'dayjs'
-
-const locales = {
-	de: () => import('dayjs/locale/de'),
-	en: () => import('dayjs/locale/en'),
-	it: () => import('dayjs/locale/it'),
-	es: () => import('dayjs/locale/es'),
-	fr: () => import('dayjs/locale/fr'),
-}
 
 const i18n = useI18n({ useScope: 'global' })
 
@@ -26,9 +17,6 @@ const settings = useSettingsStore()
 const settingsState = ref(_.cloneDeep(settings.$state))
 const modalSettings = ref<InstanceType<typeof Modal>>()
 const enableApply = ref(false)
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type SupportedLocale = keyof typeof settings.supportedLocales
 
 watch(settingsState, () => enableApply.value = !_.isEqual(settingsState.value, settings.$state), { deep: true })
 
@@ -41,8 +29,6 @@ const openSettings = () => {
 const applyChanges = () => {
 	settings.$state = settingsState.value
 	i18n.locale.value = settingsState.value.currentLanguage
-	const dateLocale = settingsState.value.currentLanguage.split("-")[0] as keyof typeof locales
-	locales[dateLocale]().then(() => dayjs.locale(dateLocale))
 	enableApply.value = false
 }
 
@@ -96,7 +82,7 @@ defineExpose({
 									<li :class="{ 'bg-primary text-base-100': active, 'bg-secondary text-base-100 font-bold': selected }"
 										class="flex items-center gap-2 px-2 py-1 font-medium transition-colors">
 										<p class="truncate">
-											{{ settings.supportedLocales[lang as SupportedLocale] }}
+											{{ lang }}
 										</p>
 									</li>
 								</ListboxOption>

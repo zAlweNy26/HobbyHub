@@ -14,5 +14,33 @@
     "sidebar": {
         "search": "Cerca un elemento...",
         "add": "Aggiungi"
+    },
+    "card": {
+        "name": "Nome",
+        "save": "Salva",
+        "delete": "Rimuovi"
+    },
+    "toolbar": {
+        "unmaximize": "Ripristina finestra",
+        "minimize": "Riduci a icona",
+        "maximize": "Ingrandisci finestra",
+        "close": "Chiudi finestra"
+    },
+    "header": {
+        "menu": "Menu",
+        "zoom": {
+            "in": "Ingrandisci",
+            "out": "Riduci"
+        },
+        "sortings": {
+            "title": "Ordinamenti",
+            "alphabetical": "Alfabetico"
+        },
+        "filters": "Filtri",
+        "view": {
+            "detail": "Vista dettagliata",
+            "grid": "Vista a griglia",
+            "compact": "Vista compatta"
+        }
     }
 }

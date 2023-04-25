@@ -152,7 +152,6 @@ async function createWindow() {
           if (c.image) {
             const resizedBuffer = await sharp(c.image).resize(160, 240).toBuffer()
             c.image = resizedBuffer.toString('base64')
-            console.log(c.image)
           }
         })
       })

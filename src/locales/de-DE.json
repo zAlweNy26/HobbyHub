@@ -1,0 +1,46 @@
+{
+    "theme": {
+        "dark": "Dunkel",
+        "light": "Licht"
+    },
+    "settings": {
+        "title": "Einstellungen",
+        "language": "Sprache",
+        "data": "Daten",
+        "import": "Importieren",
+        "export": "Exportieren",
+        "apply": "Anwenden"
+    },
+    "sidebar": {
+        "search": "Suche nach einem Element...",
+        "add": "Hinzufügen"
+    },
+    "card": {
+        "name": "Name",
+        "save": "Speichern",
+        "delete": "Löschen"
+    },
+    "toolbar": {
+        "unmaximize": "Fenster wiederherstellen",
+        "minimize": "Als Symbol minimieren",
+        "maximize": "Fenster maximieren",
+        "close": "Fenster schließen"
+    },
+    "header": {
+        "menu": "Menü",
+        "zoom": {
+            "in": "Vergrößern",
+            "out": "Verkleinern"
+        },
+        "sortings": {
+            "title": "Sortieren",
+            "alphabetical": "Alphabetisch"
+        },
+        "filters": "Filter",
+        "view": {
+            "detail": "Detaillierte Listenansicht",
+            "grid": "Gitteransicht",
+            "compact": "Kompakte Listenansicht"
+        }
+    }
+}

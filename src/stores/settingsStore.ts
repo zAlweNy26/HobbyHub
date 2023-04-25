@@ -2,20 +2,14 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { ref } from 'vue'
 
 export const useSettingsStore = defineStore('settings', () => {
-    const supportedLocales = {
-        'en-US': "English",
-        'it-IT': "Italiano"
-    }
-
     const isDark = ref(false)
-    const currentLanguage = ref('en-US')
+    const currentLanguage = ref("English")
     const zoom = ref(100)
 
     return {
         isDark,
         currentLanguage,
-        zoom,
-        supportedLocales
+        zoom
     }
 })
 

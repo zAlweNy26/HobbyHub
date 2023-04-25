@@ -9,7 +9,9 @@ import { ViewMode } from '@/interfaces'
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption, ListboxLabel } from '@headlessui/vue'
 import { usePageStore } from '@stores/pageStore'
 import { storeToRefs } from 'pinia'
-import dayjs from 'dayjs'
+import { useI18n } from 'vue-i18n'
+
+const i18n = useI18n()
 
 const emit = defineEmits(['delete', 'save'])
 
@@ -100,8 +102,13 @@ const uploadImage = (e: Event) => {
 				currentCard.value.image = event.target.result as string
 			}
 		})
-		fileReader.readAsDataURL(inputElement.files[0]);
+		fileReader.readAsDataURL(inputElement.files[0])
 	}
+}
+
+const localizeDate = (date: number | Date) => {
+	const locale = i18n.locale.value.toLowerCase().substring(0, 2)
+	return new Intl.DateTimeFormat(locale, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date)
 }
 
 defineExpose({
@@ -152,8 +159,13 @@ defineExpose({
 			<p class="font-bold text-neutral">
 				{{ baseCard.name }}
 			</p>
-			<p class="text-xs font-semibold text-neutral">
-				Added on {{ dayjs(currentCard.added * 1000).format("L") }}
+			<p v-if="currentCard.added > 0" class="text-xs font-semibold text-neutral">
+				Added on
+				<span class="font-bold">{{ localizeDate(currentCard.added * 1000) }}</span>
+			</p>
+			<p v-if="currentCard.updated > 0" class="text-xs font-semibold text-neutral">
+				Last change on
+				<span class="font-bold">{{ localizeDate(currentCard.updated * 1000) }}</span>
 			</p>
 			<div class="flex items-center gap-2 mt-1">
 				<div v-for="tag in baseCard.tags.filter(t => t.value != 'None')" :key="tag.type"
@@ -201,7 +213,7 @@ defineExpose({
 						class="flex h-[7.5rem] w-20 items-center justify-center rounded-lg bg-base-100 text-neutral transition-colors hover:bg-base-300" />
 					<div class="absolute top-0 left-0 transition-colors rounded-lg bg-base-100/25 hover:bg-base-100/50">
 						<label for="imageInputBox"
-							class="flex h-[7.5rem] w-20 cursor-pointer justify-center rounded-lg border-2 border-dashed border-neutral p-4 text-sm transition hover:border-neutral-focus">
+							class="flex h-[7.5rem] w-20 cursor-pointer justify-center transition-all rounded-lg border-2 border-dashed border-neutral p-4 text-sm hover:border-neutral-focus">
 							<div class="flex flex-col items-center justify-center">
 								<Icon icon="fluent:camera-24-filled" class="w-8 h-8" />
 							</div>
@@ -216,11 +228,11 @@ defineExpose({
 					</h3>
 					<p v-if="currentCard.added > 0" class="text-xs">
 						Added on
-						<span class="font-bold">{{ dayjs(currentCard.added * 1000).format("L") }}</span>
+						<span class="font-bold">{{ localizeDate(currentCard.added * 1000) }}</span>
 					</p>
 					<p v-if="currentCard.updated > 0" class="text-xs">
 						Last change on
-						<span class="font-bold">{{ dayjs(currentCard.updated * 1000).format("L") }}</span>
+						<span class="font-bold">{{ localizeDate(currentCard.updated * 1000) }}</span>
 					</p>
 				</div>
 			</div>
@@ -265,10 +277,10 @@ defineExpose({
 		<div class="flex justify-between gap-2">
 			<button type="button" class="gap-2 px-2 font-bold normal-case btn-error btn-sm btn" @click="deleteCard">
 				<Icon icon="eva:trash-2-fill" class="w-6 h-6" />
-				<p>Delete</p>
+				<p>{{ $t("card.delete") }}</p>
 			</button>
 			<button type="button" class="gap-2 px-2 font-bold normal-case btn-success btn-sm btn" @click="saveCard">
-				<p>Save</p>
+				<p>{{ $t("card.save") }}</p>
 				<Icon icon="eva:save-fill" class="w-6 h-6" />
 			</button>
 		</div>

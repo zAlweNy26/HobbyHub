@@ -43,8 +43,8 @@ const updateAlphabeticalOrder = () => {
 <template>
 	<div class="justify-between min-h-0 gap-2 navbar shrink-0 bg-primary">
 		<div class="w-full gap-2 overflow-hidden navbar-start">
-			<Tooltip content="Menu">
-				<button class="btn-ghost btn-square btn-sm btn text-base-100" aria-label="Menu" @click="sideBarComp!.isOpen = true">
+			<Tooltip :content="$t('header.menu')">
+				<button class="btn-ghost btn-square btn-sm btn text-base-100" :aria-label="$t('header.menu')" @click="sideBarComp!.isOpen = true">
 					<Icon icon="fluent:navigation-24-filled" class="w-6 h-6" />
 				</button>
 			</Tooltip>
@@ -53,15 +53,15 @@ const updateAlphabeticalOrder = () => {
 		</div>
 		<div class="gap-2 navbar-end w-min">
 			<div class="flex shrink-0 select-none items-center justify-center gap-2 overflow-hidden rounded-full p-0.5 outline outline-2 outline-base-100">
-				<Tooltip content="Zoom out">
-					<button class="btn-ghost btn-xs btn-circle btn text-base-100" aria-label="Zoom out"
+				<Tooltip :content="$t('header.zoom.out')">
+					<button class="btn-ghost btn-xs btn-circle btn text-base-100" :aria-label="$t('header.zoom.out')"
 						@click="updateZoom(-10)">
 						<Icon icon="fluent:zoom-out-24-filled" class="w-6 h-6" />
 					</button>
 				</Tooltip>
 				<span class="text-xs font-bold text-base-100">{{ Math.round(zoom) }}%</span>
-				<Tooltip content="Zoom in">
-					<button class="btn-ghost btn-xs btn-circle btn text-base-100" aria-label="Zoom in"
+				<Tooltip :content="$t('header.zoom.in')">
+					<button class="btn-ghost btn-xs btn-circle btn text-base-100" :aria-label="$t('header.zoom.in')"
 						@click="updateZoom(10)">
 						<Icon icon="fluent:zoom-in-24-filled" class="w-6 h-6" />
 					</button>
@@ -70,8 +70,8 @@ const updateAlphabeticalOrder = () => {
 			<div class="divider divider-horizontal" />
 			<Popover v-slot="{ open }" class="relative inline-flex">
 				<PopoverButton as="template">
-					<Tooltip content="Sorting" :disable="open">
-						<button class="btn-ghost btn-sm btn-square btn text-base-100" aria-label="Sorting">
+					<Tooltip :content="$t('header.sortings.title')" :disable="open">
+						<button class="btn-ghost btn-sm btn-square btn text-base-100" :aria-label="$t('header.sortings.title')">
 							<Icon icon="fluent:arrow-sort-down-lines-24-filled" class="w-6 h-6" />
 						</button>
 					</Tooltip>
@@ -81,10 +81,10 @@ const updateAlphabeticalOrder = () => {
 					leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-90 opacity-0">
 					<PopoverPanel class="absolute z-10 -translate-x-1/2 left-1/2 translate-y-3/4">
 						<div class="flex gap-2 p-2 shadow-xl rounded-xl bg-base-300">
-							<Tooltip content="Alphabetical">
+							<Tooltip :content="$t('header.sortings.alphabetical')">
 								<label class="swap btn-ghost btn-sm btn-square btn"
 									:class="{ '!btn-primary': sortings[currentSection].alphabet != Order.None }"
-									aria-label="Alphabetical">
+									:aria-label="$t('header.sortings.alphabetical')">
 									<input type="checkbox" class="modal-toggle"
 										:checked="sortings[currentSection].alphabet != Order.None" @click="updateAlphabeticalOrder">
 									<Icon icon="fluent:text-sort-ascending-16-filled" class="w-6 h-6 swap-on" />
@@ -99,8 +99,8 @@ const updateAlphabeticalOrder = () => {
 			</Popover>
 			<Popover v-slot="{ open }" class="relative inline-flex">
 				<PopoverButton as="template">
-					<Tooltip content="Filters" :disable="open">
-						<button class="btn-ghost btn-sm btn-square btn text-base-100" aria-label="Filters">
+					<Tooltip :content="$t('header.filters')" :disable="open">
+						<button class="btn-ghost btn-sm btn-square btn text-base-100" :aria-label="$t('header.filters')">
 							<Icon icon="fluent:filter-24-filled" class="w-6 h-6" />
 						</button>
 					</Tooltip>
@@ -117,26 +117,26 @@ const updateAlphabeticalOrder = () => {
 				</Transition>
 			</Popover>
 			<div class="divider divider-horizontal" />
-			<Tooltip content="Grid View">
+			<Tooltip :content="$t('view.grid')">
 				<button
 					class="btn-ghost btn-sm btn-square btn text-base-100 disabled:bg-primary-focus disabled:text-base-100"
-					:disabled="viewMode == ViewMode.Grid" aria-label="Grid View"
+					:disabled="viewMode == ViewMode.Grid" :aria-label="$t('view.grid')"
 					@click="page.changeViewMode(ViewMode.Grid)">
 					<Icon icon="fluent:grid-24-filled" class="w-6 h-6" />
 				</button>
 			</Tooltip>
-			<Tooltip content="Detail List View">
+			<Tooltip :content="$t('view.detail')">
 				<button
 					class="btn-ghost btn-sm btn-square btn text-base-100 disabled:bg-primary-focus disabled:text-base-100"
-					:disabled="viewMode == ViewMode.Detail" aria-label="Detail List View"
+					:disabled="viewMode == ViewMode.Detail" :aria-label="$t('view.detail')"
 					@click="page.changeViewMode(ViewMode.Detail)">
 					<Icon icon="fluent:apps-list-detail-24-filled" class="w-6 h-6" />
 				</button>
 			</Tooltip>
-			<Tooltip content="Compact List View">
+			<Tooltip :content="$t('view.compact')">
 				<button
 					class="btn-ghost btn-sm btn-square btn text-base-100 disabled:bg-primary-focus disabled:text-base-100"
-					:disabled="viewMode == ViewMode.Compact" aria-label="Compact List View"
+					:disabled="viewMode == ViewMode.Compact" :aria-label="$t('view.compact')"
 					@click="page.changeViewMode(ViewMode.Compact)">
 					<Icon icon="fluent:text-bullet-list-ltr-24-filled" class="w-6 h-6" />
 				</button>
