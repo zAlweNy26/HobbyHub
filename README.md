@@ -8,7 +8,7 @@ Idea by [@FedeDC512](https://github.com/FedeDC512)
 
 ## ✨ Features
 
-- Add any kind of item in the tracker, use the auto-fill feature or add them by hand
+- Add any kind of item in the tracker, view them in different prospectives
 - Customize all added item, decorate them with custom tags or simply add them to the list
 - Create specific lists about your interests
 - Catalog your collections as you prefer, filter and sort it according to your preferences
@@ -18,7 +18,7 @@ Idea by [@FedeDC512](https://github.com/FedeDC512)
 ## 🚀 Main used tools
 
 - TypeScript
-- Vue (+ Vue Router)
+- Vue
 - LowDB
 - TailwindCSS (+ DaisyUI)
 - Pinia
@@ -26,8 +26,7 @@ Idea by [@FedeDC512](https://github.com/FedeDC512)
 
 ## To-do list
 
-- [ ] Create and choose a definitive logo and name for the app
-- [ ] Add UI translations in Italian, French, German and Spanish
-- [ ] Implement an auto-fill feature for every category
+- [ ] Create a definitive logo for the app
+- [x] Add UI translations in Italian, French, German and Spanish
 - [ ] Make the search input work
-- [ ] Add feature to export and import (merge or override) the save file
+- [x] Add feature to export and import the save file
