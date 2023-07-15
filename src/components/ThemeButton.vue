@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<label class="px-2 btn-base-100 swap btn-sm btn" aria-label="Change theme">
+	<label class="px-2 btn-neutral swap btn-sm btn" aria-label="Change theme">
 		<input type="checkbox" class="modal-toggle" :checked="isDark" @click="toggleTheme">
 		<Icon icon="eva:moon-fill" class="w-6 h-6 swap-off" />
 		<Icon icon="eva:sun-fill" class="w-6 h-6 swap-on" />

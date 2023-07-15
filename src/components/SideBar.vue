@@ -48,7 +48,7 @@ defineExpose({
 							leave="transform transition ease-in-out duration-300" leave-from="translate-x-0"
 							leave-to="-translate-x-full">
 							<DialogPanel class="relative w-screen pointer-events-auto max-w-fit">
-								<div class="flex flex-col h-full max-w-[16rem] gap-2 p-2 shadow-xl bg-base-300">
+								<div class="flex flex-col h-full max-w-[16rem] gap-2 p-2 shadow-xl bg-base-200">
 									<div class="flex items-center justify-between gap-4">
 										<button class="gap-2 px-1 btn-ghost btn-sm btn" aria-label="Open Settings" @click="openSettings">
 											<Icon icon="fluent:settings-24-filled" class="w-6 h-6" />

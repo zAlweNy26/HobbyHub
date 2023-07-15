@@ -67,7 +67,7 @@ async function createWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(url)
-    win.webContents.openDevTools({ mode: "detach", activate: false })
+    //win.webContents.openDevTools({ mode: "detach", activate: false })
   } else {
     win.loadFile(indexHtml)
   }

@@ -2,25 +2,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Placement } from "@floating-ui/vue";
-import { arrow, computePosition, flip, offset, shift } from "@floating-ui/vue"
+import { arrow as addArrow, computePosition, flip, offset, shift } from "@floating-ui/vue"
 
-const props = defineProps({
-    content: {
-        type: String,
-        required: true
-    },
-    disable: {
-        type: Boolean,
-        default: false
-    },
-    arrow: {
-        type: Boolean,
-        default: true
-    },
-    placement: {
-        type: String,
-        default: "bottom"
-    }
+const props = withDefaults(defineProps<{
+	content: string,
+	disable?: boolean,
+	arrow?: boolean,
+    placement?: string
+}>(), {
+    disable: false,
+    arrow: true,
+    placement: "bottom"
 })
 
 const isHidden = ref(true)
@@ -38,7 +30,7 @@ async function calculatePosition() {
                 offset(8),
                 flip(),
                 shift({ padding: 8 }),
-                arrow({ element: arrowRef.value! }),
+                addArrow({ element: arrowRef.value! }),
             ],
         }
     );
